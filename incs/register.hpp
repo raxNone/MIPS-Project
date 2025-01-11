@@ -1,7 +1,6 @@
 #ifndef __REG_HPP__
 #define __REG_HPP__
 
-#include "memory.h" // for memset function
 
 typedef enum _REG_NUM{
     $zero = 0,
@@ -18,13 +17,22 @@ typedef enum _REG_NUM{
     $ra
 } REG_NUM;
 
+typedef struct _REG_OUT{
+    unsigned int data1;
+    unsigned int data2;
+} REG_OUT;
+
+
 class Register{
 private:
     unsigned int reg[32];
-
 public:
-    void clearReg(){    memset(reg,0,32);   }
-    unsigned int& operator[](REG_NUM num){   return reg[num];    }
+    Register();
+    void clearReg();
+    unsigned int operator[](REG_NUM num);   // for GUI and debug
+    REG_OUT read(unsigned char rr1, unsigned char rr2, unsigned char wr);
+    void write(unsigned char wr, unsigned int wd, bool RegWrite);
+    
 };
 
 #endif

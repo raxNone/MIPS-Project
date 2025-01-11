@@ -7,22 +7,18 @@ typedef struct _MEM{
     unsigned int value;
 } MEM;
 
-class Memory{
+class InstructionMemory{
+private:
+    std::vector<MEM> mem;    
+public:
+    unsigned int work(unsigned int addr);
+};
+
+class DataMemory{
 private:
     std::vector<MEM> mem;
-
 public:
-    unsigned int& operator[](unsigned int addr){
-        for(auto& entry : mem){
-            if(entry.addr == addr){
-                return entry.value;
-            }
-        }
-    mem.push_back({addr, 0});
-    return mem.back().value;
-    }
-    
-
+    unsigned int work(unsigned int addr, unsigned int writeData, bool MemWrite);
 };
 
 #endif
