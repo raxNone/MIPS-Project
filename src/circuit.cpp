@@ -13,17 +13,17 @@ unsigned int sign_ext(int i){
 ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned char op){
     switch(op%0xf){
         case 0b0000:    //AND
-            break;
+            return {(i1&i2)==0, i1&i2};
         case 0b0001:    //OR
-            break;
+            return {(i1||i2)==0, i1||i2};
         case 0b0010:    //add
-            break;
+            return {(i1+i2==0), i1+i2};
         case 0b0110:    //sub
-            break;
+            return {(i1+i2==0), i1-i2};
         case 0b0111:    //slt
-            break;
+            return {(i1==i2), i1<i2};
         case 0b1100:    //NOR
-            break;
+            return {~(i1||i2)==0, ~(i1||i2)};
     }
 }
 CONTROL_OUT Control(unsigned char opcode){
