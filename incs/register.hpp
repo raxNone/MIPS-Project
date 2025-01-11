@@ -24,8 +24,6 @@ private:
 
 public:
     void clearReg(){    memset(reg,0,32);   }
-    // void setReg(REG_NUM num, unsigned int value){   reg[num] = value;   }
-    // unsigned int getReg(REG_NUM num){   return reg[num];    }
     unsigned int& operator[](REG_NUM num){   return reg[num];    }
 };
 

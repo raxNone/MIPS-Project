@@ -1,5 +1,9 @@
 #include "../incs/main.hpp"
+#include <iostream>
 
 int main(int argc, char **argv){
-    Register::clearReg();
+    Register reg = Register();
+    reg.clearReg();
+    Memory mem = Memory();
+
 }
