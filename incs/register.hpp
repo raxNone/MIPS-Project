@@ -25,9 +25,8 @@ typedef struct _REG_OUT{
 
 class Register{
 private:
-    unsigned int reg[32];
+    unsigned int reg[32] = {0,};
 public:
-    Register();
     void clearReg();
     unsigned int operator[](REG_NUM num);   // for GUI and debug
     REG_OUT read(unsigned char rr1, unsigned char rr2, unsigned char wr);

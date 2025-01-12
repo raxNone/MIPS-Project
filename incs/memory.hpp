@@ -18,7 +18,7 @@ class DataMemory{
 private:
     std::vector<MEM> mem;
 public:
-    unsigned int work(unsigned int addr, unsigned int writeData, bool MemWrite);
+    unsigned int work(unsigned int addr, unsigned int writeData, bool MemWrite, bool MemRead);
 };
 
 #endif
