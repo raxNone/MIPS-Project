@@ -8,7 +8,7 @@ unsigned int InstructionMemory::work(unsigned int addr){
     }
     return 0;
 }
-unsigned int DataMemory::work(unsigned int addr, unsigned int writeData, bool MemWrite){
+unsigned int DataMemory::work(unsigned int addr, unsigned int writeData, bool MemWrite, bool MemRead){
     if (MemWrite){
         for(auto& entry : mem){
             if(entry.addr == addr){
@@ -19,7 +19,7 @@ unsigned int DataMemory::work(unsigned int addr, unsigned int writeData, bool Me
         mem.push_back({addr, writeData});
         return 0;
     }
-    else{
+    else if(MemRead){
         for(auto& entry : mem){
             if(entry.addr == addr){
                 return entry.value;
@@ -27,4 +27,5 @@ unsigned int DataMemory::work(unsigned int addr, unsigned int writeData, bool Me
         }
         return 0;
     }
+    return 0;
 }

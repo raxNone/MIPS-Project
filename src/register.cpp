@@ -1,7 +1,6 @@
 #include "../incs/register.hpp"
 #include "memory.h" // for memset function
 
-Register::Register(){   clearReg(); }
 void Register::clearReg(){    memset(reg,0,32);   }
 unsigned int Register::operator[](REG_NUM num){   return reg[num];    }
 REG_OUT Register::read(unsigned char rr1, unsigned char rr2, unsigned char wr){

@@ -4,8 +4,8 @@ unsigned int adder(unsigned int i1, unsigned int i2){
     return i1 + i2;
 }
 unsigned int mux(unsigned int i1, unsigned int i2, bool s){
-    if(s)   return i1;
-    return i2;
+    if(s)   return i2;
+    return i1;
 }
 unsigned int sign_ext(int i){
     return i;
@@ -13,17 +13,17 @@ unsigned int sign_ext(int i){
 ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned char op){
     switch(op%0xf){
         case 0b0000:    //AND
-            return {(i1&i2)==0, i1&i2};
+            return {0, i1&i2};
         case 0b0001:    //OR
-            return {(i1||i2)==0, i1||i2};
+            return {0, i1||i2};
         case 0b0010:    //add
-            return {(i1+i2==0), i1+i2};
+            return {0, i1+i2};
         case 0b0110:    //sub
-            return {(i1+i2==0), i1-i2};
+            return {(i1 == i2), i1-i2};
         case 0b0111:    //slt
             return {(i1==i2), i1<i2};
         case 0b1100:    //NOR
-            return {~(i1||i2)==0, ~(i1||i2)};
+            return {0, ~(i1||i2)};  // 다시 구현 필요
     }
 }
 CONTROL_OUT Control(unsigned char opcode){
