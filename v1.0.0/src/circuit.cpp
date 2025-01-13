@@ -15,7 +15,7 @@ ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned char op){
         case 0b0000:    //AND
             return {0, i1&i2};
         case 0b0001:    //OR
-            return {0, i1||i2};
+            return {0, i1|i2};
         case 0b0010:    //add
             return {0, i1+i2};
         case 0b0110:    //sub
@@ -23,8 +23,9 @@ ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned char op){
         case 0b0111:    //slt
             return {(i1==i2), i1<i2};
         case 0b1100:    //NOR
-            return {0, ~(i1||i2)};  // 다시 구현 필요
+            return {0, ~(i1|i2)};
     }
+    return {0,0};
 }
 CONTROL_OUT Control(unsigned char opcode){
     switch (opcode^0b111111){
@@ -37,6 +38,7 @@ CONTROL_OUT Control(unsigned char opcode){
         case 0b000100:  //beq
             return {0,0,0,0,0,0,1,0,1};
     }
+    return {0,0,0,0,0,0,0,0,0};
 }
 unsigned char ALU_control(unsigned char funct , bool op1, bool op0){
     if (op1 == 1){  // R-type
@@ -49,5 +51,5 @@ unsigned char ALU_control(unsigned char funct , bool op1, bool op0){
         }
     }
     else if (op0 == 1)  return 0b0110;  //sub
-    else    return 0b0010;  //add
+    return 0b0010;  //add
 }
