@@ -24,20 +24,20 @@ typedef struct _HAZARD_OUT{
 } HAZARD_OUT;
 
 typedef struct _FORWARD_OUT{
-    unsigned char ForwardA;
-    unsigned char ForwardB;
+    unsigned int ForwardA;
+    unsigned int ForwardB;
 } FORWARD_OUT;
 
 unsigned int adder(unsigned int i1, unsigned int i2);
 unsigned int mux2to1(unsigned int i1, unsigned int i2, bool s);
-unsigned int mux3to1(unsigned int i1, unsigned int i2, unsigned int i3, unsigned char s);
+unsigned int mux3to1(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int s);
 unsigned int sign_ext(int i);
 
-ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned char op);
-CONTROL_OUT Control(unsigned char opcode);
-unsigned char ALU_control(unsigned char funct, bool op1, bool op0);
+ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned int op);
+CONTROL_OUT Control(unsigned int opcode);
+unsigned int ALU_control(unsigned int funct, bool op1, bool op0);
 
-HAZARD_OUT Hazard_detection_unit(bool MemRead, unsigned char IDrt, unsigned char IDrs, unsigned char EXrt);
-FORWARD_OUT Forwarding_unit(bool MEMRegWrite, unsigned char EXrs, unsigned char EXrt, unsigned char MEMrd, unsigned char WBrd);
+HAZARD_OUT Hazard_detection_unit(bool MemRead, unsigned int IDrt, unsigned int IDrs, unsigned int EXrt);
+FORWARD_OUT Forwarding_unit(bool MEMRegWrite, bool WBRegWrite, unsigned int EXrs, unsigned int EXrt, unsigned int MEMrd, unsigned int WBrd);
 
 #endif

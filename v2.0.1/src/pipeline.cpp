@@ -14,13 +14,14 @@ string toHexString(unsigned int num) {
 
 IF_OUT _IF::work(){
     if (PCWrite)
-        pc = mux2to1(adder(pc,4), BTA, branch_sig);
+        pc = mux2to1(nextPc, BTA, branch_sig);
     if (Flush)
-        return {adder(pc, 4), 0, 1};
-    return {adder(pc, 4), iMem.work(pc), 0};
+        return {nextPc, 0, 1};
+    nextPc = adder(pc,4);
+    return {nextPc, iMem.work(pc), 0};
 }
 
-void _ID::upload(IF_OUT IFID){
+void _ID::load(IF_OUT IFID){
     if (IFIDWrite){
         nextPc = IFID.nextPc;
         instruction = IFID.instruction;
@@ -36,6 +37,8 @@ void _ID::upload(IF_OUT IFID){
 void _ID::setSig(){
     control_sig = Control(subBit(instruction, 31, 26));
     Hazard_result = Hazard_detection_unit(EX.control_mem.MemRead, rt, rs, EX.rt);
+
+    IF.branch_sig = control_sig.Branch;
     
     IF.PCWrite = Hazard_result.IFIDWrite;
     IF.BTA = adder(sign_ext(constant)<<2, nextPc);
@@ -60,7 +63,7 @@ ID_OUT _ID::work(){
     
 }
 
-void _EX::upload(ID_OUT IDEX){
+void _EX::load(ID_OUT IDEX){
     control_wb = IDEX.control_wb;
     control_mem = IDEX.control_mem;
     control_ex = IDEX.control_ex;
@@ -75,7 +78,7 @@ void _EX::upload(ID_OUT IDEX){
 }
 
 void _EX::setSig(){
-    Forward_result =  Forwarding_unit(MEM.control_mem.MemWrite, EX.rs, EX.rt, MEM.write_reg, WB.write_reg);
+    Forward_result =  Forwarding_unit(MEM.control_wb.RegWrite, WB.control_wb.RegWrite, EX.rs, EX.rt, MEM.write_reg, WB.write_reg);
     ForwardA = Forward_result.ForwardA;
     ForwardB = Forward_result.ForwardB;
     
@@ -92,7 +95,7 @@ EX_OUT _EX::work(){
     };
 }
 
-void _MEM::upload(EX_OUT EXMEM){
+void _MEM::load(EX_OUT EXMEM){
     control_wb = EXMEM.control_wb;
     control_mem = EXMEM.control_mem;
     ALU_result = EXMEM.ALU_result;
@@ -109,7 +112,7 @@ MEM_OUT _MEM::work(){
     };
 }
 
-void _WB::upload(MEM_OUT MEMWB){
+void _WB::load(MEM_OUT MEMWB){
     control_wb = MEMWB.control_wb;
     read_data = MEMWB.read_data;
     not_read_data = MEMWB.not_read_data;

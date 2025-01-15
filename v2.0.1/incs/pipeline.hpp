@@ -12,11 +12,17 @@ using namespace std;
 extern Register reg;
 extern InstructionMemory iMem;
 extern DataMemory dMem;
+class _IF;
+class _ID;
+class _EX;
+class _MEM;
+class _WB;
 extern _IF IF ;
 extern _ID ID ;
 extern _EX EX ;
 extern _MEM MEM ;
 extern _WB WB;
+
 
 typedef struct _EX_CONTROL{
     bool RegDst=0;
@@ -49,9 +55,9 @@ typedef struct _ID_OUT{
     unsigned int rs_data=0;
     unsigned int rt_data=0;
     unsigned int constant=0;
-    unsigned char rs=0;
-    unsigned char rt=0;
-    unsigned char rd=0;
+    unsigned int rs=0;
+    unsigned int rt=0;
+    unsigned int rd=0;
 
 } ID_OUT;
 
@@ -60,7 +66,7 @@ typedef struct _EX_OUT{
     MEM_CONTROL control_mem;
     unsigned int ALU_result=0;
     unsigned int write_data=0;
-    unsigned char write_reg=0;
+    unsigned int write_reg=0;
 
 } EX_OUT;
 
@@ -68,7 +74,7 @@ typedef struct _MEM_OUT{
     WB_CONTROL control_wb;
     unsigned int read_data=0;
     unsigned int not_read_data=0;
-    unsigned char write_reg=0;
+    unsigned int write_reg=0;
 
 } MEM_OUT;
 
@@ -79,7 +85,7 @@ public:
     bool PCWrite = 1;
     bool Flush = 0;
     unsigned int BTA=0;
-
+    unsigned int nextPc=0;
     IF_OUT work();
 };
 
@@ -88,15 +94,15 @@ public:
     unsigned int nextPc=0;
     unsigned int instruction=0;
     bool IFIDWrite=1;
-    unsigned char rs;
-    unsigned char rt;
-    unsigned char rd;
+    unsigned int rs;
+    unsigned int rt;
+    unsigned int rd;
     unsigned int constant;
     CONTROL_OUT control_sig;
     HAZARD_OUT Hazard_result;
     REG_OUT reg_data;
 
-    void upload(IF_OUT IFID);
+    void load(IF_OUT IFID);
     void setSig();
     ID_OUT work();
 
@@ -108,19 +114,18 @@ public:
     MEM_CONTROL control_mem;
     EX_CONTROL control_ex;
     FORWARD_OUT Forward_result;
-    unsigned char ForwardA=0;
-    unsigned char ForwardB=0;
-    unsigned char ALU_control_sig;
-
+    unsigned int ForwardA=0;
+    unsigned int ForwardB=0;
+    unsigned int ALU_control_sig;
     unsigned int rs_data=0;
     unsigned int rt_data=0;
     unsigned int constant=0;
-    unsigned char rs=0;
-    unsigned char rt=0;
-    unsigned char rd=0;
+    unsigned int rs=0;
+    unsigned int rt=0;
+    unsigned int rd=0;
     EX_OUT work();
     void setSig();
-    void upload(ID_OUT IDEX);
+    void load(ID_OUT IDEX);
 };
 
 class _MEM{
@@ -130,8 +135,8 @@ public:
     bool zero;
     unsigned int ALU_result=0;
     unsigned int write_data=0;
-    unsigned char write_reg=0;
-    void upload(EX_OUT EXMEM);
+    unsigned int write_reg=0;
+    void load(EX_OUT EXMEM);
     MEM_OUT work();
 
 };
@@ -142,14 +147,13 @@ public:
     unsigned int read_data=0;
     unsigned int not_read_data=0;
     unsigned int write_data = 0;
-    unsigned char write_reg=0;
-    void upload(MEM_OUT MEMWB);
+    unsigned int write_reg=0;
+    void load(MEM_OUT MEMWB);
     void work();
 };
 
 unsigned int subBit(unsigned int num, int start, int end);
 string toHexString(unsigned int num);
-
 
 
 #endif

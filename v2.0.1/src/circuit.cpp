@@ -7,7 +7,7 @@ unsigned int mux2to1(unsigned int i1, unsigned int i2, bool s){ // i2(1), i1(0)
     if(s)   return i2;
     return i1;
 }
-unsigned int mux3to1(unsigned int i1, unsigned int i2, unsigned int i3, unsigned char s){
+unsigned int mux3to1(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int s){
     if(s==0)    return i1;
     else if (s == 1) return i2;
     return i3;
@@ -15,7 +15,7 @@ unsigned int mux3to1(unsigned int i1, unsigned int i2, unsigned int i3, unsigned
 unsigned int sign_ext(int i){
     return i;
 }
-ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned char op){
+ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned int op){
     switch(op%0xf){
         case 0b0000:    //AND
             return {0, i1&i2};
@@ -32,7 +32,7 @@ ALU_OUT ALU(unsigned int i1, unsigned int i2, unsigned char op){
     }
     return {0,0};
 }
-CONTROL_OUT Control(unsigned char opcode){
+CONTROL_OUT Control(unsigned int opcode){
     switch (opcode^0b111111){
         case 0b000000:  //R-format
             return {1,0,0,1,0,0,0,1,0};
@@ -45,7 +45,7 @@ CONTROL_OUT Control(unsigned char opcode){
     }
     return {0,0,0,0,0,0,0,0,0};
 }
-unsigned char ALU_control(unsigned char funct , bool op1, bool op0){
+unsigned int ALU_control(unsigned int funct , bool op1, bool op0){
     if (op1 == 1){  // R-type
         switch(funct^0b1111){
             case 0b0000:    return 0b0010;  //add
@@ -59,15 +59,15 @@ unsigned char ALU_control(unsigned char funct , bool op1, bool op0){
     return 0b0010;  //add
 }
 
-HAZARD_OUT Hazard_detection_unit(bool MemRead, unsigned char IDrt, unsigned char IDrs, unsigned char EXrt){
+HAZARD_OUT Hazard_detection_unit(bool MemRead, unsigned int IDrt, unsigned int IDrs, unsigned int EXrt){
     if(MemRead && (EXrt == IDrs || EXrt == IDrt))
         return {0,0,0};
     return {1,1,1};
 }
 
-FORWARD_OUT Forwarding_unit(bool MEMRegWrite, bool WBRegWrite, unsigned char EXrs, unsigned char EXrt, unsigned char MEMrd, unsigned char WBrd){
-    unsigned char ForwardA=0;
-    unsigned char ForwardB=0;
+FORWARD_OUT Forwarding_unit(bool MEMRegWrite, bool WBRegWrite, unsigned int EXrs, unsigned int EXrt, unsigned int MEMrd, unsigned int WBrd){
+    unsigned int ForwardA=0;
+    unsigned int ForwardB=0;
     if (WBRegWrite){
         if(EXrs == WBrd)    ForwardA = 1;
         if(EXrt == WBrd)    ForwardB = 1;

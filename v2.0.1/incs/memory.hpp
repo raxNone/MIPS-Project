@@ -1,7 +1,10 @@
 #ifndef __MEM_HPP__
 #define __MEM_HPP__
 #include <vector>
+#include <fstream>
+#include <string>
 
+using namespace std;
 typedef struct _MEMORY{
     unsigned int addr;
     unsigned int value;
@@ -9,9 +12,11 @@ typedef struct _MEMORY{
 
 class InstructionMemory{
 private:
-    std::vector<MEMORY> mem;    
+    std::vector<MEMORY> mem;
+    
 public:
     unsigned int work(unsigned int addr);
+    bool load(ifstream& inFile);
 };
 
 class DataMemory{
