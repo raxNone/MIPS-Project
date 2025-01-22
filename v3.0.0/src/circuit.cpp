@@ -1,8 +1,155 @@
 #include "../incs/circuit.hpp"
 
-unsigned int adder(unsigned int i1, unsigned int i2){
+bitset<1> not_gate(bitset<32> A) {
+    if (A)
+        return FALSE;
+    else
+        return TRUE;
+}
+
+bitset<1> or_gate(bitset<32> A, bitset<32> B) {
+    if (A || B)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+bitset<1> or_gate3(bitset<32> A, bitset<32> B, bitset<32> C) {
+    return or_gate_1(A, or_gate_1(B, C));
+}
+
+bitset<1> or_gate6(bitset<32> A, bitset<32> B, bitset<32> C, bitset<32> D, bitset<32> E, bitset<32> F) {
+    return or_gate(or_gate3(A, B, C), or_gate3(D, E, F));
+}
+
+bitset<1> and_gate(bitset<32> A, bitset<32> B) {
+    if (A && B)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+bitset<1> and_gate3(bitset<32> A, bitset<32> B, bitset<32> C) {
+    return and_gate(A, and_gate(B, C));
+}
+
+bitset<1> and_gate4(bitset<32> A, bitset<32> B, bitset<32> C, bitset<32> D) {
+    return and_gate3(A, B, and_gate(C, D));
+}
+
+bitset<1> and_gate6(bitset<32> A, bitset<32> B, bitset<32> C, bitset<32> D, bitset<32> E, bitset<32> F) {
+    return and_gate(and_gate3(A, B, C), and_gate3(D, E, F));
+}
+
+bitset<1> xor_gate(bitset<32> A, bitset<32> B) {
+    if (A ^ B)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+bitset<1> nor_gate(bitset<32> A, bitset<32> B) {
+    return not_gate(or_gate(A, B));
+}
+
+bitset<1> nand_gate(bitset<32> A, bitset<32> B) {
+    return not_gate(and_gate(A, B));
+}
+
+bitset<32> adder_32(bitset<32> i1, bitset<32> i2) {
+    bitset<32> sum;
+    bool carry = 0;
+
+    for (int i = 0; i < 32; ++i) {
+        // 각 비트에 대해 full adder 수행
+        bool a = i1[i];
+        bool b = i2[i];
+
+        // sum[i] = a XOR b XOR carry
+        sum[i] = xor_gate(xor_gate(a, b), carry);
+
+        // carry = (a AND b) OR (carry AND (a XOR b))
+        carry = or_gate(and_gate(a, b), and_gate(carry, xor_gate(a, b)));
+    }
+
+    return sum;
+}
+
+bitset<5> mux_5_2to1_0(bitset<5> i1, bitset<5> i2, bitset<1> s) { //i1:0, i2:1
+    bitset<5> result;
+
+    for (int i = 0; i < 5; ++i) {
+        // MUX 구현: result[i] = (!s & i1[i]) | (s & i2[i])
+        bool and1 = and_gate(not_gate(s), i1[i]);   // AND 게이트 (s가 0일 때 i1 선택)
+        bool and2 = and_gate(s, i2[i]);       // AND 게이트 (s가 1일 때 i2 선택)
+        result[i] = or_gate(and1, and2);     // OR 게이트
+    }
+
+    return result;
+}
+
+bitset<32> mux_32_2to1_0(bitset<32> i1, bitset<32> i2, bitset<1> s) { // i1:0, i2:1
+    bitset<32> result;
+
+    for (int i = 0; i < 32; ++i) {
+        // MUX 구현: result[i] = (!s & i1[i]) | (s & i2[i])
+        bool and1 = and_gate(not_gate(s), i1[i]);   // AND 게이트 (s가 0일 때 i1 선택)
+        bool and2 = and_gate(s, i2[i]);       // AND 게이트 (s가 1일 때 i2 선택)
+        result[i] = or_gate(and1, and2);     // OR 게이트
+    }
+
+    return result;
+}
+
+bitset<32> mux_32_2to1_1(bitset<32> i1, bitset<32> i2, bitset<1> s) { // i1:1, i2:0
+    bitset<32> result;
+
+    for (int i = 0; i < 32; ++i) {
+        // MUX 구현: result[i] = (s & i1[i]) | (!s & i2[i])
+        bool and1 = and_gate(s, i1[i]);   // AND 게이트 (s가 1일 때 i1 선택)
+        bool and2 = and_gate(not_gate(s), i2[i]);       // AND 게이트 (s가 0일 때 i2 선택)
+        result[i] = or_gate(and1, and2);     // OR 게이트
+    }
+
+    return result;
+}
+
+bitset<5> mux_5_3to1_0(bitset<5> i1, bitset<5> i2, bitset<5> i3, bitset<2> s) { // i1:1, i2:0, i3:2
+    bitset<5> result;
+
+    for (int i = 0; i < 5; ++i) {
+        // 선택 신호 처리
+        bool select_i1 = and_gate(not_gate(s[1]), s[0]); // s == 01 (1)
+        bool select_i2 = and_gate(not_gate(s[1]), not_gate(s[0]));  // s == 00 (0)
+        bool select_i3 = and_gate(s[1], not_gate(s[0]));  // s == 10 (2)
+
+        // 각 입력을 선택 신호에 따라 결합
+        result[i] = or_gate3(and_gate(select_i1, i1[i]), and_gate(select_i2, i2[i]), and_gate(select_i3, i3[i]));
+    }
+
+    return result;
+}
+
+bitset<32> mux_32_3to1_1(bitset<32> i1, bitset<32> i2, bitset<32> i3, bitset<2> s) { // i1:0, i2:2, i3:1
+    bitset<32> result;
+
+    for (int i = 0; i < 32; ++i) {
+        // 선택 신호 처리
+        bool select_i1 = and_gate(not_gate(s[1]), not_gate(s[0])); // s == 00 (0)
+        bool select_i2 = and_gate(s[1], not_gate(s[0]));  // s == 10 (2)
+        bool select_i3 = and_gate(not_gate(s[1]), s[0]);  // s == 01 (1)
+
+        // 각 입력을 선택 신호에 따라 결합
+        result[i] = or_gate3(and_gate(select_i1, i1[i]), and_gate(select_i2, i2[i]), and_gate(select_i3, i3[i]));
+    }
+
+    return result;
+}
+
+unsigned int adder(unsigned int i1, unsigned int i2) {
     return i1 + i2;
 }
+
 unsigned int mux2to1(unsigned int i1, unsigned int i2, bool s){ // i2(1), i1(0) 
     if(s)   return i2;
     return i1;

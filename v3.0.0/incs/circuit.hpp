@@ -35,12 +35,14 @@ typedef struct _FORWARD_OUT{
 bitset<28> shiftLeft2_26(bitset<26> i);
 bitset<32> shiftLeft2_32(bitset<32> i);
 
-bitset<32> adder_32(bitset<32> i1, bitset<32> i2);
-bitset<5> mux_5_2to1_0(bitset<5> i1, bitset<5> i2, bitset<1> s);
-bitset<32> mux_32_2to1_0(bitset<32> i1, bitset<32> i2, bitset<1> s);
-bitset<32> mux_32_2to1_1(bitset<32> i1, bitset<32> i2, bitset<1> s);
-bitset<5> mux_5_3to1_0(bitset<5> i1, bitset<5> i2, bitset<5> i3, bitset<2> s);
-bitset<32> mux_32_3to1_1(bitset<32> i1, bitset<32> i2, bitset<32> i3, bitset<2> s);
+bitset<32> adder_32(bitset<32> i1, bitset<32> i2);  //ok
+bitset<5> mux_5_2to1_0(bitset<5> i1, bitset<5> i2, bitset<1> s); //ok
+
+bitset<32> mux_32_2to1_0(bitset<32> i1, bitset<32> i2, bitset<1> s); //ok
+bitset<32> mux_32_2to1_1(bitset<32> i1, bitset<32> i2, bitset<1> s); //ok
+
+bitset<5> mux_5_3to1_0(bitset<5> i1, bitset<5> i2, bitset<5> i3, bitset<2> s); //ok
+bitset<32> mux_32_3to1_1(bitset<32> i1, bitset<32> i2, bitset<32> i3, bitset<2> s); //ok
 bitset<32> signExt(bitset<16> i);
 
 ALU_OUT ALU(bitset<32> i1, bitset<32> i2, bitset<32> op);
