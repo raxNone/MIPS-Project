@@ -2,38 +2,59 @@
 #define __PIPELINE__
 #include <bitset>
 #include "signal.hpp"
+#include "circuit.hpp"
 using namespace std;
 
 // Pipeline Register
 
 
-class IFID_Class{
-private:
+class IFID_reg{
 public:
     bitset<1> IFIDWrite = 1;
-    struct IFID_REG{
-        bitset<32> next_pc;
-        bitset<32> instruction;
-        bitset<1> flush;
-    } IFID ;
+    bitset<32> next_pc;
+    bitset<32> instruction;
+    bitset<1> flush;
+    void setReg(bitset<32> next_pc, bitset<32> instruction);
     void setFlush(bitset<1> flush);
 };
 
-typedef struct _IDEX{
+class IDEX_reg{
+public:
     WB_SIG signal_wb;
     MEM_SIG signal_mem;
     EX_SIG signal_ex;
-    
-} IDEX;
+    bitset<32> next_pc;
+    bitset<32> rs_data;
+    bitset<32> rt_data;
+    bitset<32> constant;
+    bitset<5> rs;
+    bitset<5> rt;
+    bitset<5> rd;
+    void setSig(CONTROL_OUT sig);
 
-typedef struct _EXMEM{
+};
+    
+
+class EXMEM_reg{
+public:
     WB_SIG signal_wb;
     MEM_SIG signal_mem;
-} EXMEM;
+    bitset<32> next_pc;
+    bitset<32> BTA;
+    bitset<1> zero;
+    bitset<32> ALU_result;
+    bitset<32> rt_data;
+    bitset<5> write_reg;
+};
 
-typedef struct _MEMWB{
+class MEMWB_reg{
+public:
     WB_SIG signal_wb;
-} MEMWB;
+    bitset<32> next_pc;
+    bitset<32> mem_data;
+    bitset<32> ALU_result;
+    bitset<5> write_reg;
+};
 
 
 #endif

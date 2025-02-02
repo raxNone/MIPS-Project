@@ -21,18 +21,8 @@ typedef struct _MEM_SIG{
 typedef struct _WB_SIG{
     bitset<2> MemtoReg;
     bitset<1> RegWrite;
+    bitset<1> RegDst;
 } WB_SIG;
 
-// ALUcontrol Signal
-bitset<4> ALUControlOp;
-
-// Forwarding Signal
-bitset<2> ForwardA;
-bitset<2> ForwardB;
-
-// Hazard Signal
-bitset<1> IFIDWrite;
-bitset<1> PCWrite;
-bitset<1> stall;
 
 #endif

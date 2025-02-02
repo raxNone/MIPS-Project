@@ -59,13 +59,11 @@ unsigned int ALU_control(unsigned int funct , bool op1, bool op0){
     return 0b0010;  //add
 }
 
-HAZARD_OUT Hazard_detection_unit(bool MemRead, unsigned int IDrt, unsigned int IDrs, unsigned int EXrt){
-    if(MemRead && (EXrt == IDrs || EXrt == IDrt))
-        return {0,0,0};
-    return {1,1,1};
+HAZARD_OUT HazardDetectionUnit(bitset<1> EX_MemRead, bitset<1> EX_Branch, bitset<1> MEM_Branch, bitset<5> ID_rt, bitset<5> ID_rs, bitset<5> EX_rt){
+    
 }
 
-FORWARD_OUT Forwarding_unit(bool MEMRegWrite, bool WBRegWrite, unsigned int EXrs, unsigned int EXrt, unsigned int MEMrd, unsigned int WBrd){
+FORWARD_OUT ForwardingUnit(bool MEMRegWrite, bool WBRegWrite, unsigned int EXrs, unsigned int EXrt, unsigned int MEMrd, unsigned int WBrd){
     unsigned int ForwardA=0;
     unsigned int ForwardB=0;
     if (WBRegWrite){

@@ -18,7 +18,7 @@ private:
     vector<MEMORY> mem;
 public:
     bitset<32> read(bitset<32> addr);
-    bool load(ifstream& inFile);
+    void load(bitset<32> addr, bitset<32> data);
 };
 
 class DataMemory{

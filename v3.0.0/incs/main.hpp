@@ -5,5 +5,8 @@
 #include "register.hpp"
 #include "memory.hpp"
 #include "pipeline.hpp"
+#include "assemble.hpp"
+#include "signal.hpp"
+#include "tools.hpp"
 
 #endif
