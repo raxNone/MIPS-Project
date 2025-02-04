@@ -13,6 +13,12 @@ using namespace std;
 
 // mutex mtx_reg;      // for register I/O
 
+// Assemble + Linking
+    LABEL_TABLE globl;
+    unordered_map<string, unsigned int> labelMap;
+    unordered_map<string, unsigned int> section;  // [text, rodata, data, bss, heap, stack]
+
+
 // declare thread
 shared_ptr<thread> t_hazard;
 shared_ptr<thread> t_control;
@@ -25,11 +31,11 @@ shared_ptr<thread> t_calc_BTA;
 shared_ptr<thread> t_calc_wb_data;
 
 // PC
-    bitset<32> pc = globl.addr;
+    bitset<32> pc;
 
 // Memory
-    InstructionMemory iMem = InstructionMemory();
-    DataMemory dMem = DataMemory();
+    InstructionMemory iMem = InstructionMemory("../../test/IMEM");
+    DataMemory dMem = DataMemory("../../test/DMEM");
 
 // Register
     Register reg = Register();
@@ -62,11 +68,6 @@ shared_ptr<thread> t_calc_wb_data;
     bitset<1> stall;
 
 
-// Assemble + Linking
-    LABEL_TABLE globl;
-    unordered_map<string, unsigned int> labelMap;
-    unordered_map<string, unsigned int> section;  // [text, rodata, data, bss, heap, stack]
-
 // temp
     bitset<32> beq_addr;
     bitset<32> j_addr;
@@ -77,7 +78,7 @@ shared_ptr<thread> t_calc_wb_data;
 
     bitset<32> wb_data;
 
-
+/*{
 // void IF(thread& t_IF){
 //     bitset<32> next_pc;
 //     bitset<32> instruction;
@@ -229,21 +230,28 @@ shared_ptr<thread> t_calc_wb_data;
 
 // }
 
+}*/
 
-void print(){
-    cout << globl.name << ": " << globl.addr<<endl;
-    cout << iMem.read(globl.addr) << endl;
+void print(const string& line){
+    if (!empty(line)){
+        cout << "[D] 0x" << hex << setw(8) << setfill('0') << stoul(line);
+        cout << " : " << dMem.work(stoul(line),0,1,0)<< endl;
+    }
+    else{
+        cout << "[I] 0x" << hex << setw(8) << setfill('0') << pc.to_ulong();
+        cout << " : " << iMem.work(pc)<< endl;
+        pc = pc.to_ulong()+4;
+    }
 }
 
 int main(int argc, char **argv){
-    char input = '\n';
+    string line;
     assemble();
-    print();
-    // while(input != 'q'){
+    cout << "[globl] "<< globl.name << ": " << *globl.addr<<endl;
+    while(getline(cin, line)){
+        print(line);
     //     setSig();
-    
     //     print();
-    //     cin.get(input);
-    // }
+    }
     
 }

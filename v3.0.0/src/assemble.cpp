@@ -2,8 +2,11 @@
 
 void assemble()
 {
+    if(BYTE_ORDER != LITTLE_ENDIAN){
+        cerr << "use x86 or ARM" << endl;
+        exit(-1);
+    }
     ifstream inFile("../../test/test.s");
-    ofstream outFile("../../test/test");
     string line;
     string instruction;
     string section_name[6] = {".text", ".rodata", ".data", ".bss", ".heap", ".stack"};
@@ -17,12 +20,19 @@ void assemble()
     string funct;
     bitset<16> imm;
     bitset<26> address;
-    unsigned int openParenPos;
+    int openParenPos;
+    
+    // data segment
+    string space;
 
     int sect = -1;
-    unsigned int pos = 0;   // current addr
+    uint32_t pos = 0;   // current addr
+    
+    // for word align
+    string labelName;
+    bool labelPosed = true;
 
-    if(!inFile.is_open() || !outFile.is_open()){
+    if(!inFile.is_open()){
         cerr << "FILE ERROR" << endl;
         exit(-1);
     }
@@ -30,14 +40,24 @@ void assemble()
     while(getline(inFile, line)){
         istringstream iss(line);
         iss >> token;
-        
+
+        if (line.find(':') != string::npos){
+            labelPosed = false;
+            if(token.back() == ':'){
+                token.pop_back();
+                labelName = token;
+            }else{
+                labelName = token;
+                iss >> token;
+            }
+            iss >> token;
+            if (empty(token))   continue;
+        }
+        if (line.empty()) continue;
+
         if (token == ".globl"){
             iss >> globl.name;
-        }else if (token.back() == ':'){
-            token.pop_back();
-            labelMap[token] = pos;
-            if (token == globl.name)
-                globl.addr = pos;
+            globl.addr = &labelMap[globl.name];
         }else if (token == ".text"){
             if (!iss.eof()){
                 iss >> token;
@@ -55,14 +75,90 @@ void assemble()
         }else{
             switch(sect){
                 case 0:
-                    pos+=WORD;
+                    if (!labelPosed){
+                        labelPosed = true;
+                        pos += pos%WORD;
+                        labelMap[labelName] = pos;
+                    }
+                    pos += WORD;
                     break;
                 case 2:
+                    if (token == ".space"){
+                        iss >> token;
+                        if(!labelPosed){
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        space.resize(stoui(token), '\0');
+                        dMem.load(pos, space);
+                    }else if (token == ".byte"){
+                        iss >> token;
+                        if(!labelPosed){
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        if (token.back() == '\''){
+                            dMem.load(pos, static_cast<uint8_t>(atoi(token.substr(1,1).c_str())));
+                        }else
+                            dMem.load(pos, static_cast<uint8_t>(stoui(token)));
+                        pos += BYTE;
+                    }else if (token == ".half"){
+                        iss >> token;
+                        if(!labelPosed){
+                            pos += pos%HALF;
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        dMem.load(pos, static_cast<uint16_t>(stoui(token)));
+                        pos += HALF;
+                    }else if (token == ".word"){
+                        iss >> token;
+                        if(!labelPosed){
+                            pos += pos%WORD;
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        dMem.load(pos, static_cast<uint32_t>(stoui(token)));
+                        pos += WORD;
+                    }else if (token == ".float"){
+                        iss >> token;
+                        if(!labelPosed){
+                            pos += pos%FLOAT;
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        dMem.load(pos, static_cast<uint32_t>(stoui(token)));
+                        pos += FLOAT;
+                    }else if (token == ".double"){
+                        iss >> token;
+                        if(!labelPosed){
+                            pos += pos%DOUBLE;
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        dMem.load(pos, static_cast<uint64_t>(stoui(token)));
+                        pos += DOUBLE;
+                    }else if (token == ".ascii"){
+                        iss >> token;
+                        if(!labelPosed){
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        dMem.load(pos, token.substr(1, token.size()-2));
+                        pos += token.size()-2;
+                    }else if (token == ".asciiz"){
+                        iss >> token;
+                        if(!labelPosed){
+                            labelPosed = true;
+                            labelMap[labelName] = pos;
+                        }
+                        dMem.load(pos, token.substr(1, token.size()-2)+"\0");
+                        pos += token.size()-1;
+                    }
                     break;
             }
         }
         
-
     }
     inFile.close();
     inFile.open("../../test/test.s");
@@ -70,19 +166,26 @@ void assemble()
     while(getline(inFile, line)){
         istringstream iss(line);        
         iss >> token;
-
+        if (line.find(':') != string::npos){
+            labelPosed = false;
+            if(token.back() != ':'){
+                iss >> token;
+            }
+            if (iss.eof())   continue;
+        }
         if (line.empty()) continue;
         
         if (token == ".globl"){
-
-        }else if (token.back() == ':'){
+            continue;
         }else if (token == ".text"){
+            pos += pos%WORD;
             if (!iss.eof()){
                 iss >> token;
                 pos = stoui(token);
             }
             sect = 0;
         }else if (token == ".data"){
+            pos += pos%WORD;
             if (!iss.eof()){
                 iss >> token;
                 pos = stoui(token);
@@ -147,10 +250,62 @@ void assemble()
                         instruction =
                             opcodes[opcode] + registerMap[rs] + registerMap[rt] + imm.to_string();
                     }
+                    if (!labelPosed){
+                        pos += pos%WORD;
+                        labelPosed = true;
+                    }
                     iMem.load(pos, stoul(instruction, nullptr, 2));
                     pos += WORD;
                     break;
                 case 2:
+                    if (token == ".space"){
+                        if(!labelPosed){
+                            labelPosed = true;
+                        }
+                        iss >> token;
+                        pos += stoui(token);
+                    }else if (token == ".byte"){
+                        if (!labelPosed){
+                            labelPosed = true;
+                        }
+                        pos += BYTE;
+                    }else if (token == ".half"){
+                        if (!labelPosed){
+                            pos += pos%HALF;
+                            labelPosed = true;
+                        }
+                        pos += HALF;
+                    }else if (token == ".word"){
+                        if (!labelPosed){
+                            pos += pos%WORD;
+                            labelPosed = true;
+                        }
+                        pos += WORD;
+                    }else if (token == ".float"){
+                        if (!labelPosed){
+                            pos += pos%FLOAT;
+                            labelPosed = true;
+                        }
+                        pos += FLOAT;
+                    }else if (token == ".double"){
+                        if (!labelPosed){
+                            pos += pos%DOUBLE;
+                            labelPosed = true;
+                        }
+                        pos += DOUBLE;
+                    }else if (token == ".ascii"){
+                        iss >> token;
+                        if (!labelPosed){
+                            labelPosed = true;
+                        }
+                        pos += token.size()-2;
+                    }else if (token == ".asciiz"){
+                        iss >> token;
+                        if (!labelPosed){
+                            labelPosed = true;
+                        }
+                        pos += token.size()-1;
+                    }
                     break;
                 default:
                     break;
@@ -158,19 +313,19 @@ void assemble()
             }
         }
 
-
     }
     inFile.close();
-    outFile.close();
-    
+
+    pc = *globl.addr;
 }
 
-unsigned int stoui(const string& token){
-    if (token.substr(0, 2) == "0x" || token.substr(0, 3) == "-0x" || token.substr(0, 2) == "0X" || token.substr(0, 3) == "-0X")
+uint32_t stoui(const string& token){
+    if (token.substr(0, 2) == "0x" || token.substr(0, 3) == "-0x" || token.substr(0, 2) == "0X" || token.substr(0, 3) == "-0X"){
         return stoul(token, nullptr, 16);
-    else if (labelMap.find(token) != labelMap.end()){
+    }else if (labelMap.find(token) != labelMap.end()){
         return labelMap[token];
-    }else
+    }else{
         return stoul(token, nullptr, 10);
+    }
 }
 

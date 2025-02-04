@@ -1,5 +1,8 @@
-.text 0x1234
+.data
+s1: .byte 3
+s2: .word 0xffff
 
+.text 0x1234
 .globl main
 main:
     addi $t0, $t0, 0x1240
@@ -11,5 +14,3 @@ main:
 L1:
     nop
     jr $ra
-
-.data

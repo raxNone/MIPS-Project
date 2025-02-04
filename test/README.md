@@ -1,11 +1,16 @@
-# tester
-.data, .text 섹터만 정의함.
+## tester
+## MIPS assembler features (Appendix A.10)
+Comments
+Labels
+Numbers are base 10, Hexadecimals are prefixed with 0x
+Assembler directives :
+- .text <addr> : text segment start point
+- .data <addr> : data segment start point 
+- .globl symbol
+- .ascii, .asciiz “some string”
+- .space n
+- .byte, .half, .word, .float, .double d1, d2, … dn
+Strings are enclosed with “ and “
+Special characters : \n, \t and \”
+Word Alignment
 
-규칙
-
-1. 라벨 선언 시 라벨명과 콜론을 붙이고 개행해야함.
-    ex) main: 
-    ~~~
-2. 숫자는 16진수(0x, 0X) 혹은 10진수(앞에 아무것도 안붙인거)만 사용 가능.
-    1. 음수 사용 가능
-    2. 확장의 판단을 요구하는 경우 16진수로 표현된 경우 비트 패턴, 10진수인 경우 상수로 봄.

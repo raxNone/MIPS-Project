@@ -7,26 +7,29 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+#include <endian.h>
 #include "memory.hpp"
 
 #define BYTE 1
+#define HALF 2
 #define WORD 4
-
+#define FLOAT 4
+#define DOUBLE 8
 
 using namespace std;
 
 extern InstructionMemory iMem;
-
+extern DataMemory dMem;
 
 struct LABEL_TABLE{
     string name;
-    unsigned int addr;
+    uint32_t* addr;
 };
 
 extern LABEL_TABLE globl;
-extern unordered_map<string, unsigned int> labelMap;
-extern unordered_map<string, unsigned int> section;  // [text, rodata, data, bss, heap, stack]
+extern unordered_map<string, uint32_t> labelMap;
+extern unordered_map<string, uint32_t> section;  // [text, rodata, data, bss, heap, stack]
+extern bitset<32> pc;
 
 // Mapping MIPS Instruction
 inline unordered_map<string, string> opcodes = {
@@ -59,7 +62,7 @@ inline unordered_map<string, string> registerMap = {
 
 
 void assemble();
-unsigned int stoui(const string& token);
+uint32_t stoui(const string& token);
 
 
 #endif
