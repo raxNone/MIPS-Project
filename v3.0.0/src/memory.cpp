@@ -23,8 +23,10 @@ bool Memory::valid_page(const uint32_t &page_addr)
 bitset<32> Memory::read(const bitset<32> &addr)
 {   
     if (!valid_page((addr.to_ulong()/PAGE_SIZE))){
-        cerr << "segment fault" << endl;
-        exit(-1);
+        // cout << "pc : " <<hex<<setw(8)<<addr.to_ulong()<<endl;
+        // cerr << "segment fault" << endl;
+        // exit(-1);
+        return 0;
     }
     uint32_t page = VtoP[(addr.to_ulong()/PAGE_SIZE)];
     uint32_t pa = page + addr.to_ulong()%PAGE_SIZE;

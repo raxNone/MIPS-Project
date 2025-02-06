@@ -15,13 +15,12 @@ typedef struct _MEM_SIG{
     bitset<1> MemWrite;
     bitset<1> Branch;
     bitset<1> Jump;
-    bitset<1> JMPReg;
+    bitset<1> JumpReg;
 } MEM_SIG;
 
 typedef struct _WB_SIG{
     bitset<2> MemtoReg;
     bitset<1> RegWrite;
-    bitset<1> RegDst;
 } WB_SIG;
 
 

@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include <iomanip>
 #include <iostream>
 #include "circuit.hpp"
 using namespace std;
@@ -18,10 +19,7 @@ using namespace std;
 
 using namespace std;
 
-typedef struct _MEMORY{
-    bitset<32> addr;
-    bitset<32> value;
-} MEMORY;
+
 
 class Memory{
 public:

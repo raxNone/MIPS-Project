@@ -35,8 +35,8 @@ const string reg_name[32] = {
 };
 
 typedef struct _REG_OUT{
-    bitset<32> read_data1;
-    bitset<32> read_data2;
+    bitset<32> a;
+    bitset<32> b;
 } REG_OUT;
 
 
@@ -46,8 +46,8 @@ private:
 public:
     bitset<32> operator[](REG_NUM num);
     bitset<32> operator[](unsigned int num);
-    REG_OUT read(bitset<5> read_reg1, bitset<5> read_reg2);
-    void write(bitset<5>write_reg, bitset<32>write_data, bitset<1> RegWrite);
+    REG_OUT read(const bitset<5>& rs, const bitset<5>& rt);
+    void write(const bitset<5>& rd, const bitset<32>& data, bitset<1> RegWrite);
 };
 
 #endif

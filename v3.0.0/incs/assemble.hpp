@@ -35,7 +35,7 @@ extern bitset<32> pc;
 inline unordered_map<string, string> opcodes = {
     // R-format
     {"add", "000000"}, {"sub", "000000"}, {"and", "000000"}, {"or", "000000"},
-    {"jr", "000000"}, {"sll", "000000"}, {"srl", "000000"},
+    {"jr", "000000"}, {"sll", "000000"}, {"srl", "000000"}, {"slt", "000000"},
     // J-format
     {"j", "000010"}, {"jal", "000011"},
     // I-format
@@ -45,7 +45,8 @@ inline unordered_map<string, string> opcodes = {
 };
 
 inline unordered_map<string, string> functCodes = {
-    {"add", "100000"}, {"sub", "100010"}, {"and", "100100"}, {"or", "100101"}
+    {"add", "100000"}, {"sub", "100010"}, {"and", "100100"}, {"or", "100101"},
+    {"jr", "001000"}, {"sll", "000000"}, {"srl", "000010"}, {"slt", "101010"},
 };
 
 inline unordered_map<string, string> registerMap = {

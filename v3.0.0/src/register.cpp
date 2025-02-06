@@ -3,10 +3,11 @@
 
 bitset<32> Register::operator[](REG_NUM num){   return reg[num];    }
 bitset<32> Register::operator[](unsigned int num){   return reg[num];    }
-REG_OUT Register::read(bitset<5> read_reg1, bitset<5> read_reg2){
-    
+REG_OUT Register::read(const bitset<5>& rs, const bitset<5>& rt){
+    return {reg[rs.to_ulong()], reg[rt.to_ulong()]};
 }
 
-void Register::write(bitset<5>write_reg, bitset<32>write_data, bitset<1> RegWrite){
-    
+void Register::write(const bitset<5>& rd, const bitset<32>& data, bitset<1> RegWrite){
+    if (RegWrite[0])
+        reg[rd.to_ulong()] = data;
 }

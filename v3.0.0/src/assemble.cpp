@@ -219,7 +219,7 @@ void assemble()
                     }else if (opcodes[opcode] == "000010" || opcodes[opcode] == "000011"){
                         // J-format
                         iss >> token;
-                        address = stoui(token);
+                        address = stoui(token)>>2;
                         instruction =
                             opcodes[opcode] + address.to_string();
                     }
