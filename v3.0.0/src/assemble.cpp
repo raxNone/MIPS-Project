@@ -6,7 +6,7 @@ void assemble()
         cerr << "use x86 or ARM" << endl;
         exit(-1);
     }
-    ifstream inFile("../../test/test.s");
+    ifstream inFile("test/test.s");
     string line;
     string instruction;
     string section_name[6] = {".text", ".rodata", ".data", ".bss", ".heap", ".stack"};

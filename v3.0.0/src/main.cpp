@@ -26,8 +26,8 @@ unordered_map<thread*, shared_ptr<mutex>> thread_mutex_map;
     bitset<32> pc;
 
 // Memory
-    InstructionMemory iMem = InstructionMemory("../../test/IMEM");
-    DataMemory dMem = DataMemory("../../test/DMEM");
+    InstructionMemory iMem = InstructionMemory("test/IMEM");
+    DataMemory dMem = DataMemory("test/DMEM");
 
 // Register
     Register reg = Register();
@@ -280,7 +280,7 @@ int main(int argc, char **argv){
 
     CROW_ROUTE(app, "/")
     ([](){
-        std::ifstream t("../../p0tat019.github.io/index.html");  // HTML 파일 열기
+        std::ifstream t("p0tat019.github.io/index.html");  // HTML 파일 열기
         std::string html((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());  // HTML 파일 내용 읽기
         pc = 0;
@@ -290,7 +290,7 @@ int main(int argc, char **argv){
 
     CROW_ROUTE(app, "/asset/index.css")
     ([](){
-        std::ifstream t("../../p0tat019.github.io/asset/index.css");  // CSS 파일 열기
+        std::ifstream t("p0tat019.github.io/asset/index.css");  // CSS 파일 열기
         std::string css((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());  // CSS 파일 내용 읽기
         return crow::response{css};  // CSS 파일 내용 반환
@@ -298,7 +298,7 @@ int main(int argc, char **argv){
     
     CROW_ROUTE(app, "/asset/index.js")
     ([](){
-        std::ifstream t("../../p0tat019.github.io/asset/index.js");  // JS 파일 열기
+        std::ifstream t("p0tat019.github.io/asset/index.js");  // JS 파일 열기
         std::string js((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());  // JS 파일 내용 읽기
         return crow::response{js};  // JS 파일 내용 반환
