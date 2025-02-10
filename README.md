@@ -1,12 +1,15 @@
 # MIPS-Project
 mips emulator project
 
+1. 
 ```sh
 git clone https://github.com/raxNone/MIPS-Project.git &&
 make &&
 make run &&
 make clean
 ```
+2.
+   visit [http://localhost:8080](http://localhost:8080)
 
 ## 📌 기본 명령어
 
