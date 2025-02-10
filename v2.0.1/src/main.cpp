@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <fstream>
+
 using namespace std;
 
 Register reg = Register();
@@ -21,15 +23,16 @@ EX_OUT EXMEM;
 MEM_OUT MEMWB;
 
 void print(){
-    // cout << "pc : " << toHexString(IF.pc) << endl;
+    cout << "pc : " << toHexString(IF.pc) << endl;
+    cout << "$t0 : " << toHexString(reg[$t0]) << endl;
+    cout << toHexString(MEM.write_data);
 }
 void pipeline(){
-    //upload
-
-    ID.upload(IFID);
-    EX.upload(IDEX);
-    MEM.upload(EXMEM);
-    WB.upload(MEMWB);
+    //load
+    ID.load(IFID);
+    EX.load(IDEX);
+    MEM.load(EXMEM);
+    WB.load(MEMWB);
     
     //setSig
     ID.setSig();    //Control, Hazard
@@ -46,6 +49,13 @@ void pipeline(){
 }
 int main(int argc, char **argv){
     char input = '\n';
+    ifstream inFile("../../test/test");
+    if (not iMem.load(inFile)){
+        cout << "FILE ERROR"<<endl;
+        inFile.close();
+        exit(-1);
+    }
+    inFile.close();
     while(input != 'q'){
         pipeline();
         print();
