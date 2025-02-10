@@ -3,9 +3,11 @@ mips emulator project
 
 ```sh
 git clone https://github.com/raxNone/MIPS-Project.git &&
+cd MIPS-Project &&
+make clean &&
 make &&
-make run &&
-make clean
+make run
+
 ```
 
 ## 📌 기본 명령어
