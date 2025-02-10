@@ -1,4 +1,5 @@
 #include "../incs/main.hpp"
+#include "crow.h"
 #include <iostream>
 #include <sstream>
 #include <iostream>
@@ -10,6 +11,9 @@
 #include <mutex>
 
 using namespace std;
+
+const vector<u_char> ELF_MAGIC = {0x7F, 'E', 'L', 'F'};
+const vector<u_char> PE_MAGIC = {'M', 'Z'};
 
 mutex mtx;
 unordered_map<thread*, shared_ptr<mutex>> thread_mutex_map;
@@ -36,12 +40,15 @@ unordered_map<thread*, shared_ptr<mutex>> thread_mutex_map;
 
 // Signal
     const CONTROL_OUT control_zero;
+    
+
+    
+void run(bool clock){
     CONTROL_OUT control_result;
     FORWARD_OUT forward_result;
     FORWARD_OUT bforward_result;
     HAZARD_OUT hazard_result;
     ALU_OUT ALU_result;
-
 
     bitset<4> ALUOp;    // Output of ALUControl
 
@@ -78,8 +85,7 @@ unordered_map<thread*, shared_ptr<mutex>> thread_mutex_map;
     bitset<32> mem_data;
     bitset<32> wb_data;
 
-    
-void run(bool clock){
+
     if (clock){
         opcode = subBit(IFID.reg.instruction, 31, 26);
         rs = subBit(IFID.reg.instruction, 25, 21);
@@ -174,6 +180,7 @@ void run(bool clock){
             joinThread(t_control);
             j_addr = (subBit(IFID.reg.next_pc, 31, 28) << 28) | (shiftLeft2_26(subBit(IFID.reg.instruction, 25, 0)).to_ullong());
             tmp = mux_32_2to1_01(next_pc, j_addr, control_result.Jump);
+            instruction = iMem.work(pc);
 
             joinThread(t_branch);
             b_addr = shiftLeft2_32(constant);
@@ -214,7 +221,10 @@ void run(bool clock){
         mux_control_01(control_zero, control_result, hazard_result.stall);
         thread_mutex_map.clear();
 
-    }else{
+    }
+
+    clock = !clock;
+    if (!clock){
         if (hazard_result.PCWrite[0])
             pc = tmp;
         MEMWB.setReg({
@@ -258,30 +268,189 @@ void run(bool clock){
             next_pc, instruction
         });
     }
-
+    clock = !clock;
 }
 
-
-void print(const string& line){
-    cout << "pc : ";  printHex(pc);
-    cout << "instruction : ";   printHex(instruction);
-    cout << "t0 : ";    printHex(reg[$t0]);
-    cout << "t1 : ";    printHex(reg[$t1]);
-
-}
 
 int main(int argc, char **argv){
     string line;
     bool clock = 1;
-    // cout << "thread : " << thread::hardware_concurrency() << endl;
-    assemble();
-    cout << "[globl] "<< globl.name << ": " << *globl.addr<<endl;
-    while(getline(cin, line)){
+    crow::SimpleApp app;
+
+
+    CROW_ROUTE(app, "/")
+    ([](){
+        std::ifstream t("../../p0tat019.github.io/index.html");  // HTML 파일 열기
+        std::string html((std::istreambuf_iterator<char>(t)),
+                         std::istreambuf_iterator<char>());  // HTML 파일 내용 읽기
+        pc = 0;
+
+        return html;  // HTML 파일 내용 반환
+    });
+
+    CROW_ROUTE(app, "/asset/index.css")
+    ([](){
+        std::ifstream t("../../p0tat019.github.io/asset/index.css");  // CSS 파일 열기
+        std::string css((std::istreambuf_iterator<char>(t)),
+                         std::istreambuf_iterator<char>());  // CSS 파일 내용 읽기
+        return crow::response{css};  // CSS 파일 내용 반환
+    });
+    
+    CROW_ROUTE(app, "/asset/index.js")
+    ([](){
+        std::ifstream t("../../p0tat019.github.io/asset/index.js");  // JS 파일 열기
+        std::string js((std::istreambuf_iterator<char>(t)),
+                         std::istreambuf_iterator<char>());  // JS 파일 내용 읽기
+        return crow::response{js};  // JS 파일 내용 반환
+    });    
+
+    CROW_ROUTE(app,"/read_reg")
+    .methods("GET"_method)([](const crow::request& req){
+        std::string data = req.url_params.get("data");
+        crow::json::wvalue res;
+        res["content"] = printHex(reg[stoui(data)]);
+        return crow::response(200, res);
+    });
+
+    CROW_ROUTE(app,"/read_mem")
+    .methods("GET"_method)([](const crow::request& req){
+        std::string data = req.url_params.get("data");
+        crow::json::wvalue res;
+        res["content"] = printHex(dMem.work(bitset<32>(stoui(data)),0,1,0));
+        return crow::response(200, res);
+    });
+
+    CROW_ROUTE(app, "/next")
+    ([&](){
+        if (!clock)
+            return crow::response(400,"processing");
         run(clock);
-        clock = !clock;
-        run(clock);
-        clock = !clock;
-        print(line);
-    }
+
+        crow::json::wvalue res;
+
+        // 레지스터들 출력
+        to_json(res["MEMWB"], MEMWB);
+        to_json(res["EXMEM"], EXMEM);
+        to_json(res["IDEX"], IDEX);
+        to_json(res["IFID"], IFID);
+        res["pc"] = printHex(pc);
+
+        // JSON 응답
+        return crow::response(200, res);
+
+    });
+    
+    CROW_ROUTE(app, "/reset").methods("GET"_method)
+    ([&](){
+        if (!clock)
+            return crow::response(400,"processing");
+        globl = {"",nullptr};
+        labelMap.clear();
+        section.clear();
+        iMem.reset();
+        dMem.reset();
+        reg.reset();
+        
+        IFID.resetData();
+        IDEX.resetData();
+        EXMEM.resetData();
+        MEMWB.resetData();
+        assemble();
+        if (globl.name.empty())
+            return crow::response(400,"Globl Not Found");
+        pc = *globl.addr;
+        crow::json::wvalue res;
+        to_json(res["MEMWB"], MEMWB);
+        to_json(res["EXMEM"], EXMEM);
+        to_json(res["IDEX"], IDEX);
+        to_json(res["IFID"], IFID);
+        res["pc"] = printHex(pc);  // pc 값을 16진수로 변환하여 포함
+
+        return crow::response(200, res);
+    });
+    
+    
+    CROW_ROUTE(app, "/upload").methods("POST"_method)
+    ([](const crow::request& req) {
+        std::string content_type = req.get_header_value("Content-Type");
+        crow::json::wvalue response_json;
+
+        if (content_type == "text/plain") {
+            // 텍스트 파일 처리
+            std::string file_content = req.body;
+            std::ofstream t("../../test/test.s");  // ASM 파일 저장
+
+            if (!t) {
+                return crow::response(500, "Internal Server Error: Cannot open test/test.s");
+            }
+
+            t << file_content; // 텍스트 내용을 파일로 저장
+            response_json["file_content"] = file_content;
+
+        } else if (content_type.find("multipart/form-data") != std::string::npos) {
+            // multipart/form-data 처리
+            auto body = req.body;
+
+            // boundary 추출
+            size_t boundary_pos = content_type.find("boundary=");
+            if (boundary_pos == std::string::npos) {
+                return crow::response(400, "Boundary not found in Content-Type");
+            }
+            std::string boundary = "--" + content_type.substr(boundary_pos + 9);
+
+            // boundary를 기준으로 파트들을 분리
+            size_t part_start = body.find(boundary);
+            size_t part_end = 0;
+            size_t file_start, file_end;
+            bool file_found = false;
+
+            while (part_start != std::string::npos) {
+                part_end = body.find(boundary, part_start + 1); // 다음 boundary 찾기
+
+                // 파트가 파일인지 아닌지 확인
+                file_start = body.find("\r\n\r\n", part_start); // 헤더 끝
+                if (file_start != std::string::npos) {
+                    file_start += 4;  // `\r\n\r\n` 다음부터 파일 데이터 시작
+
+                    // 파일 데이터 끝 부분을 찾음
+                    file_end = (part_end == std::string::npos) ? body.size() : part_end;
+
+                    // 헤더 파싱 (파일 이름, 파일 유형 등)
+                    size_t filename_pos = body.find("filename=\"", part_start);
+                    if (filename_pos != std::string::npos) {
+                        filename_pos += 10;
+                        size_t filename_end = body.find("\"", filename_pos);
+                        std::string filename = body.substr(filename_pos, filename_end - filename_pos);
+                        std::cout << "Uploaded file: " << filename << std::endl;
+                    }
+
+                    std::string file_content = body.substr(file_start, file_end - file_start);
+
+                    // 파일 저장
+                    std::ofstream out("../../test/test.s", std::ios::binary);
+                    if (!out) {
+                        return crow::response(500, "Failed to open file for writing");
+                    }
+                    out.write(file_content.data(), file_content.size());
+
+                    response_json["file_content"] = file_content;
+                    file_found = true;
+                }
+
+                part_start = part_end;
+            }
+
+            if (!file_found) {
+                return crow::response(400, "No file found in the multipart request");
+            }
+
+        } else {
+            return crow::response(400, "Unsupported Content-Type");
+        }
+
+        return crow::response{response_json};
+    });
+    app.port(8080).run();
+    // app.port(8080).multithreaded().run();
     
 }

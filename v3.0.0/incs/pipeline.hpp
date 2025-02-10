@@ -17,6 +17,7 @@ public:
         bitset<32> instruction;
     } reg;
     void setReg(const _IFID& reg);
+    void resetData();
 };
 
 class IDEX_reg{
@@ -36,6 +37,7 @@ public:
         bitset<5> rd;
     } reg;
     void setReg(const _IDEX& reg);
+    void resetData();
 
 };
     
@@ -52,6 +54,7 @@ public:
         bitset<5> rd;
     } reg;
     void setReg(const _EXMEM& reg);
+    void resetData();
 };
 
 class MEMWB_reg{
@@ -63,6 +66,7 @@ public:
         bitset<5> rd;
     } reg;
     void setReg(const _MEMWB& reg);
+    void resetData();
 };
 
 

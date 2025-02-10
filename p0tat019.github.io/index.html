@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴퓨터 구조 시뮬레이터</title>
+    <link rel="stylesheet" href="asset/index.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="title">컴퓨터 구조 시뮬레이터</div>
+        <div class="buttons">
+            <button id="runButton" data-state="play">
+                <img id="play" src="https://img.icons8.com/metro/26/play.png" alt="play" style="width: 30px; height: 30px; vertical-align: middle;" />
+                <img id="stop" src="https://img.icons8.com/metro/26/stop.png" alt="stop" style="width: 30px; height: 30px; vertical-align: middle;"/>
+            </button>
+            <button id="nextButton">
+                <img src="https://img.icons8.com/metro/26/fast-forward.png" alt="fast-forward" style="width: 30px; height: 30px; vertical-align: middle;" />
+            </button>
+            <button id="resetButton">
+                <img src="https://img.icons8.com/metro/26/restart.png" alt="restart" style="width: 30px; height: 30px; vertical-align: middle;"/>
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="main">
+        <div class="code-container">
+            <div class="PC_view">PC : 0x00000000</div>
+            <textarea id="inputField" class="code" spellcheck="false" placeholder="코드를 입력해 주세요."></textarea>
+        </div>
+
+        <div class="circuit-container">
+            <div class="container">
+                <!-- 첫 번째 그룹: IFID, IDEX -->
+                    <h2>IFID</h2>
+                    <div id="IFID" class="data-section"></div>
+                    <h2>IDEX</h2>
+                    <div id="IDEX" class="data-section"></div>
+                    <h2>EXMEM</h2>
+                    <div id="EXMEM" class="data-section"></div>
+                    <h2>MEMWB</h2>
+                    <div id="MEMWB" class="data-section"></div>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-container">
+                <button id="modeLabel" contenteditable="false">REG</button>
+                <!-- Dynamic Form -->
+                <div>
+                    <input type="text" id="dataInput" placeholder="Enter Reg Data">
+                    <textarea id="data"></textarea>
+                    <button id="read">Submit</button>
+                </div>
+            </div>
+        
+            
+        
+        
+        
+        </div>
+    </div>
+    <footer>
+        이 프로젝트는 컴퓨터 구조의 이해를 돕기 위한 시뮬레이터입니다. 다소 맞지 않는 결과가 생길 수 있습니다.
+        <div>
+            <a href="https://github.com/raxNone/MIPS-Project" target="_blank" style="margin-top: 2%; color: white; text-decoration: none;">GITHUB 링크</a>
+        </div>
+    </footer>
+
+    <script src="asset/index.js"></script>
+</body>
+</html>

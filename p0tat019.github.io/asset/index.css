@@ -1,0 +1,272 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+footer {
+  height: auto;
+  margin-top: 5%;
+  background-color: black;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  color: rgb(5, 5, 5);
+  padding: 10px 20px;
+}
+
+.navbar .title {
+  margin-left: 3%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap; /* 줄바꿈 방지 */
+  overflow: hidden; /* 넘치는 내용 숨김 */
+  text-overflow: ellipsis; /* 넘치는 경우 생략 부호(...) 표시 */
+}
+
+
+.navbar .buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* 공통 스타일 */
+button {
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(2px);
+}
+
+/* 실행 버튼 스타일 */
+#stop {
+  display: none;  /* 기본적으로 stop 아이콘 숨김 */
+}
+
+#play {
+  display: none;  /* 기본적으로 play 아이콘 보임 */
+}
+
+/* 상태가 "stop"일 때 stop 아이콘을 보이게 */
+#runButton[data-state="stop"] #stop {
+  display: inline;
+}
+
+/* 상태가 "play"일 때 play 아이콘을 보이게 */
+#runButton[data-state="play"] #play {
+  display: inline;
+}
+
+#runButton[data-state="play"] {
+  background-color: #4caf50; /* 녹색 */
+  border-color: #4caf50;
+  color: white;
+}
+
+#runButton[data-state="play"]:hover {
+  background-color: #45a049;
+}
+
+#runButton[data-state="stop"]{
+  background-color: #ff5722;
+  border-color: #ff5722;
+  color: white;
+}
+#runButton[data-state="stop"]:hover {
+  background-color: #e64a19;
+}
+
+/* 초기화 버튼 스타일 */
+#resetButton {
+  background-color: #ff5722; /* 주황색 */
+  border-color: #ff5722;
+  color: white;
+}
+
+#resetButton:hover:not(:disabled) {
+  background-color: #e64a19;
+}
+
+#resetButton:disabled {
+  background-color: white;
+}
+
+/* 다음 버튼 스타일 */
+#nextButton {
+  background-color: #2196f3; /* 파란색 */
+  border-color: #2196f3;
+  color: white;
+}
+
+#nextButton:hover:not(:disabled) {
+  background-color: #1e88e5;
+}
+
+#nextButton:disabled {
+  background-color: white;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap; /* 여러 줄로 나누기 */
+  gap: 20px; /* 요소 사이의 간격 */
+}
+.group {
+  flex: 1 1 45%; /* 각 그룹이 전체의 45%를 차지하도록 */
+}
+.data-section {
+  margin-bottom: 20px;
+}
+.data-section strong {
+  color: #555;
+}
+.data-section p {
+  margin: 5px 0;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.code-container, .circuit-container {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: 300px; /* 최소 너비 설정 */
+  min-height: 200px; /* 최소 높이 설정 */
+}
+
+.code-container {
+  flex: 1; /* 1 비율 */
+  max-width: calc(33% - 20px); /* 너비 제한 (반응형) */
+}
+
+.circuit-container {
+  flex: 2; /* 2 비율 */
+  max-width: calc(66.67% - 16px); /* 너비 제한 (반응형) */
+  min-height: 250px;
+}
+
+.PC_view {
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1 / 0.1;
+  background-color: #ffffff; /* 배경색을 흰색으로 변경 */
+  border: 2px solid black; /* 검정색 테두리 추가 */
+  border-radius: 4px;
+  margin-bottom: 1%;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-weight: bold;
+  font-size: large;
+}
+
+
+textarea.code {
+  width: 100%;
+  max-width: 500px;
+  min-height: 500px;
+  aspect-ratio: 1 / 1.1;
+  background-color: #ffffff;
+  border: 2px solid black;
+  border-radius: 4px;
+  font-size: x-large;
+  
+
+  text-align: left; /* 왼쪽 정렬 */
+  line-height: 1.5; /* 줄 간격을 설정 */
+  padding: 15px; /* 테두리와 텍스트 사이 여백 추가 */
+  box-sizing: border-box; /* padding 포함 크기 계산 */
+  resize: none; /* 크기 조절 비활성화 */
+}
+
+.circuit-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.container {
+  display: flex;
+}
+.group {
+  margin-bottom: 20px;
+}
+.data-section {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #000;
+}
+.form-container {
+  width: 40%;
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #000;
+}
+
+textarea.data {
+  width: 100%;
+  height: 100px;
+  margin: 10px;
+}
+
+#modeLabel {
+  width: 100%;
+  margin: 10px;
+  cursor: pointer;
+}
+
+#dataInput {
+  width: 100%;
+  margin: 10px;
+}
+
+
+
+
+/* 반응형: 화면 크기가 768px 이하일 때 위아래로 배치 */
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column;
+    gap: 24px; /* 수직 간격 조정 */
+  }
+
+  .code-container, .circuit-container {
+    max-width: 100%; /* 가로폭 전체 사용 */
+  }
+
+  .stages {
+    gap: 0.001%; /* 버튼 간의 간격 */
+  }
+}

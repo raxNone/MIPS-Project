@@ -8,60 +8,66 @@ Memory::Memory(const string &file_name){
 Memory::~Memory(){
     mem.close();
 }
+void Memory::reset(){
+    mem_size = 0;
+    VtoP.clear();
+    PtoV.clear();
+}
 bool Memory::valid_page(const uint32_t &page_addr)
 {
     if (VtoP.find(page_addr) == VtoP.end()){
-        char zeroes[PAGE_SIZE] = {0,};
+        char zeroes[_PAGE_SIZE] = {0,};
         VtoP[page_addr] = mem_size;
         PtoV[mem_size] = page_addr;
-        mem.write(zeroes, PAGE_SIZE);
-        mem_size += PAGE_SIZE;
+        mem.seekg(mem_size);
+        mem.write(zeroes, _PAGE_SIZE);
+        mem_size += _PAGE_SIZE;
         return false;
     }
     return true;
 }
 bitset<32> Memory::read(const bitset<32> &addr)
-{   
-    if (!valid_page((addr.to_ulong()/PAGE_SIZE))){
+{
+    if (!valid_page(addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE)){
         // cout << "pc : " <<hex<<setw(8)<<addr.to_ulong()<<endl;
         // cerr << "segment fault" << endl;
         // exit(-1);
         return 0;
     }
-    uint32_t page = VtoP[(addr.to_ulong()/PAGE_SIZE)];
-    uint32_t pa = page + addr.to_ulong()%PAGE_SIZE;
+    uint32_t page = VtoP[addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE];
+    uint32_t pa = page + addr.to_ulong()%_PAGE_SIZE;
     uint32_t value;
     mem.seekg(pa);
-    mem.read(reinterpret_cast<char*>(&value), WORD); // 4 byte read
+    mem.read(reinterpret_cast<char*>(&value), _WORD); // 4 byte read
     return value;
 }
 void Memory::write_BYTE(const bitset<32> &addr, const uint8_t &data){
-    valid_page((addr.to_ulong()/PAGE_SIZE));
-    uint32_t page = VtoP[(addr.to_ulong()/PAGE_SIZE)];
-    uint32_t pa = page + addr.to_ulong()%PAGE_SIZE;
+    valid_page(addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE);
+    uint32_t page = VtoP[addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE];
+    uint32_t pa = page + addr.to_ulong()%_PAGE_SIZE;
     mem.seekp(pa);
-    mem.write(reinterpret_cast<const char*>(&data), BYTE);
+    mem.write(reinterpret_cast<const char*>(&data), _BYTE);
 }
 void Memory::write_HALF(const bitset<32> &addr, const uint16_t &data){
-    valid_page((addr.to_ulong()/PAGE_SIZE));
-    uint32_t page = VtoP[(addr.to_ulong()/PAGE_SIZE)];
-    uint32_t pa = page + addr.to_ulong()%PAGE_SIZE;
+    valid_page(addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE);
+    uint32_t page = VtoP[addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE];
+    uint32_t pa = page + addr.to_ulong()%_PAGE_SIZE;
     mem.seekp(pa);
-    mem.write(reinterpret_cast<const char*>(&data), HALF);
+    mem.write(reinterpret_cast<const char*>(&data), _HALF);
 }
 void Memory::write_WORD(const bitset<32> &addr, const uint32_t &data){
-    valid_page((addr.to_ulong()/PAGE_SIZE));
-    uint32_t page = VtoP[(addr.to_ulong()/PAGE_SIZE)];
-    uint32_t pa = page + addr.to_ulong()%PAGE_SIZE;
+    valid_page(addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE);
+    uint32_t page = VtoP[addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE];
+    uint32_t pa = page + addr.to_ulong()%_PAGE_SIZE;
     mem.seekp(pa);
-    mem.write(reinterpret_cast<const char*>(&data), WORD);
+    mem.write(reinterpret_cast<const char*>(&data), _WORD);
 }
 void Memory::write_DOUBLE(const bitset<32> &addr, const uint64_t &data){
-    valid_page((addr.to_ulong()/PAGE_SIZE));
-    uint32_t page = VtoP[(addr.to_ulong()/PAGE_SIZE)];
-    uint32_t pa = page + addr.to_ulong()%PAGE_SIZE;
+    valid_page(addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE);
+    uint32_t page = VtoP[addr.to_ulong()/_PAGE_SIZE*_PAGE_SIZE];
+    uint32_t pa = page + addr.to_ulong()%_PAGE_SIZE;
     mem.seekp(pa);
-    mem.write(reinterpret_cast<const char*>(&data), DOUBLE);
+    mem.write(reinterpret_cast<const char*>(&data), _DOUBLE);
 }
 
 InstructionMemory::InstructionMemory(const string& file_name) : Memory(file_name){}

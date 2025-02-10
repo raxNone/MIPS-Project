@@ -11,3 +11,6 @@ void Register::write(const bitset<5>& rd, const bitset<32>& data, bitset<1> RegW
     if (RegWrite[0])
         reg[rd.to_ulong()] = data;
 }
+void Register::reset(){
+    std::fill(std::begin(reg), std::end(reg), std::bitset<32>(0));
+}

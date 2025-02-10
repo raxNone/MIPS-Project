@@ -10,11 +10,11 @@
 #include <endian.h>
 #include "memory.hpp"
 
-#define BYTE 1
-#define HALF 2
-#define WORD 4
-#define FLOAT 4
-#define DOUBLE 8
+#define _BYTE 1
+#define _HALF 2
+#define _WORD 4
+#define _FLOAT 4
+#define _DOUBLE 8
 
 using namespace std;
 

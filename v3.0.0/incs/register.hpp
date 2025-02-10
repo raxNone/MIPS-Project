@@ -48,6 +48,7 @@ public:
     bitset<32> operator[](unsigned int num);
     REG_OUT read(const bitset<5>& rs, const bitset<5>& rt);
     void write(const bitset<5>& rd, const bitset<32>& data, bitset<1> RegWrite);
+    void reset();
 };
 
 #endif
