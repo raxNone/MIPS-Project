@@ -27,16 +27,46 @@ footer {
   margin-left: 3%;
   font-size: 1.5rem;
   font-weight: bold;
-  white-space: nowrap; /* 줄바꿈 방지 */
-  overflow: hidden; /* 넘치는 내용 숨김 */
-  text-overflow: ellipsis; /* 넘치는 경우 생략 부호(...) 표시 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
 
 .navbar .buttons {
   display: flex;
   gap: 10px;
 }
+
+        /* 로딩 팝업 배경 */
+        .loading-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(128, 128, 128, 0.8); /* 회색 반투명 */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+          display: none; /* 기본적으로 숨김 */
+      }
+
+      /* 로딩 스피너 */
+      .spinner {
+          width: 50px;
+          height: 50px;
+          border: 5px solid #f3f3f3;
+          border-top: 5px solid #3498db; /* 파란색 */
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+      }
+
+      /* 회전 애니메이션 */
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
 
 /* 공통 스타일 */
 button {
@@ -55,6 +85,7 @@ button:hover {
 button:active {
   transform: translateY(2px);
 }
+
 
 /* 실행 버튼 스타일 */
 #stop {
@@ -124,34 +155,144 @@ button:active {
   background-color: white;
 }
 
-.container {
+/* 팝업창 전체 스타일 */
+#popupForm {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  max-width: 500px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 500;
+  box-sizing: border-box;
+}
+
+/* 팝업 내 콘텐츠 */
+.popup-content {
   display: flex;
-  flex-wrap: wrap; /* 여러 줄로 나누기 */
-  gap: 20px; /* 요소 사이의 간격 */
+  flex-direction: column; /* 세로 배치 */
+  gap: 20px;              /* 요소들 간의 간격 */
+  width: 100%;
+  align-items: center;    /* 모든 콘텐츠를 중앙 정렬 */
 }
-.group {
-  flex: 1 1 45%; /* 각 그룹이 전체의 45%를 차지하도록 */
+
+/* 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.data-section {
-  margin-bottom: 20px;
+
+.close-btn:hover {
+  background-color: #e64a19;
 }
-.data-section strong {
-  color: #555;
+
+/* 모드 라벨 버튼 */
+#modeLabel {
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  max-width: 200px; /* 모드 라벨 버튼 크기 제한 */
 }
-.data-section p {
-  margin: 5px 0;
+
+#input-container {
+  display: flex;  /* 가로로 배치 */
+  gap: 10px;  /* 요소들 사이 간격 */
+  width: 100%;
+  align-items: center;
 }
+
+/* 입력 섹션 */
+#dataInput {
+  flex: 0 0 70%;  /* 너비를 70%로 설정 */
+  padding: 10px;
+  font-size: 1rem;
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* 'Read' 버튼 스타일 */
+#read {
+  flex: 0 0 10%;  /* 너비를 30%로 설정 */
+  padding: 10px;
+  height: 100%;
+  font-size: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #2196F3;
+}
+
+#read:hover {
+  background-color: #1976D2;
+}
+
+textarea#data {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  resize: none;
+  box-sizing: border-box;
+}
+
+#searchButton {
+  background-color: #c5d4da;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+#searchButton:hover {
+  background-color: #99d39c;
+}
+
+
+
+
+
+
 
 .main {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  padding: 10px;
-  background-color: #f9f9f9;
+  display: flex; /* flexbox를 이용하여 나란히 배치 */
+  flex-direction: row; /* 가로로 배치 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  gap: 2%; /* 두 컨테이너 사이의 간격 */
+  padding: 20px;
+  width: 97%;
 }
 
-.code-container, .circuit-container {
+.code-container {
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -160,38 +301,26 @@ button:active {
   flex-direction: column;
   align-items: center;
   padding: 16px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-width: 300px; /* 최소 너비 설정 */
-  min-height: 200px; /* 최소 높이 설정 */
-}
-
-.code-container {
-  flex: 1; /* 1 비율 */
-  max-width: calc(33% - 20px); /* 너비 제한 (반응형) */
-}
-
-.circuit-container {
-  flex: 2; /* 2 비율 */
-  max-width: calc(66.67% - 16px); /* 너비 제한 (반응형) */
-  min-height: 250px;
+  flex: 1 1 30%; /* 왼쪽 30% 차지 */
+  min-width: 300px;
+  max-width: 500px;
 }
 
 .PC_view {
   width: 100%;
   max-width: 500px;
   aspect-ratio: 1 / 0.1;
-  background-color: #ffffff; /* 배경색을 흰색으로 변경 */
-  border: 2px solid black; /* 검정색 테두리 추가 */
+  background-color: #ffffff;
+  border: 2px solid black;
   border-radius: 4px;
   margin-bottom: 1%;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 중앙 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
-  text-align: center; /* 텍스트 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   font-weight: bold;
   font-size: large;
 }
-
 
 textarea.code {
   width: 100%;
@@ -202,36 +331,69 @@ textarea.code {
   border: 2px solid black;
   border-radius: 4px;
   font-size: x-large;
-  
-
-  text-align: left; /* 왼쪽 정렬 */
-  line-height: 1.5; /* 줄 간격을 설정 */
-  padding: 15px; /* 테두리와 텍스트 사이 여백 추가 */
-  box-sizing: border-box; /* padding 포함 크기 계산 */
-  resize: none; /* 크기 조절 비활성화 */
+  text-align: left;
+  line-height: 1.5;
+  padding: 15px;
+  box-sizing: border-box;
+  resize: none;
 }
 
 .circuit-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;  /* 2개의 열 */
+  grid-template-rows: 1fr 1fr;  /* 2개의 행 */
+  gap: 10px;  /* 요소들 간 간격 */
+  flex: 1 1 70%; /* 오른쪽 70% 차지 */
+  min-height: 400px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+}
+
+.data-item {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;  /* 제목과 데이터 영역을 세로로 배치 */
+  justify-content: space-between;  /* 제목과 데이터 사이 공간 유지 */
+  align-items: center;  /* 중앙 정렬 */
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  min-height: 150px;  /* 고정된 최소 높이 */
+  height: 100%;  /* 부모 요소에 맞게 확장 */
+  box-sizing: border-box;  /* padding을 포함한 크기 계산 */
 }
-.container {
-  display: flex;
+
+h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  text-align: center;
+  padding-bottom: 10px;  /* 제목과 내용 사이에 간격 추가 */
 }
-.group {
-  margin-bottom: 20px;
-}
+
 .data-section {
-  margin: 10px 0;
+  width: 100%;
   padding: 10px;
   border: 1px solid #000;
+  text-align: center;
+  background-color: #f0f0f0;
+  height: 100%;
+  box-sizing: border-box;
 }
+
+.circuit-container .data-item {
+  padding: 0;  /* 여백 제거 */
+  background-color: #ffffff;
+  border-radius: 8px;
+  min-height: 150px;  /* 고정된 최소 높이 */
+  height: 100%;
+}
+
 .form-container {
-  width: 40%;
-  margin: 20px;
-  padding: 10px;
+  width: 100%;
+  padding: 20px;
   border: 1px solid #000;
 }
 
@@ -253,20 +415,22 @@ textarea.data {
 }
 
 
-
-
 /* 반응형: 화면 크기가 768px 이하일 때 위아래로 배치 */
 @media (max-width: 768px) {
   .main {
     flex-direction: column;
-    gap: 24px; /* 수직 간격 조정 */
+    gap: 24px;
   }
 
   .code-container, .circuit-container {
-    max-width: 100%; /* 가로폭 전체 사용 */
+    max-width: 100%;
   }
 
-  .stages {
-    gap: 0.001%; /* 버튼 간의 간격 */
+  .circuit-container .container {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-container {
+    width: 100%;
   }
 }

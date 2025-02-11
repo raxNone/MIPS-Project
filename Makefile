@@ -1,10 +1,13 @@
+# 버전 설정
+VER = v3.0.0
+
 # 컴파일러 설정
 CXX = g++
-CXXFLAGS =-std=c++17 -Iv3.0.0/incs -Ibuild/crow -pthread
+CXXFLAGS =-std=c++17 -I$(VER)/incs -Ibuild/crow -pthread
 
 # 디렉터리 설정
-SRC_DIR = v3.0.0/src
-INC_DIR = v3.0.0/incs
+SRC_DIR = $(VER)/src
+INC_DIR = $(VER)/incs
 BUILD_DIR = build/build
 
 # 대상 실행 파일

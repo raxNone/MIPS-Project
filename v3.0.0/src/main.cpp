@@ -284,7 +284,6 @@ int main(int argc, char **argv){
         std::string html((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());  // HTML 파일 내용 읽기
         pc = 0;
-
         return html;  // HTML 파일 내용 반환
     });
 
@@ -308,7 +307,17 @@ int main(int argc, char **argv){
     .methods("GET"_method)([](const crow::request& req){
         std::string data = req.url_params.get("data");
         crow::json::wvalue res;
-        res["content"] = printHex(reg[stoui(data)]);
+        if(!isNumber(data)){
+            data = "$" + data;
+            for(int i=0; i<32; i++){
+                if(reg_name[i] == data){
+                    res["content"] = printHex(reg[i]);
+                }
+            }
+        }else{
+            res["content"] = printHex(reg[stoui(data)]);
+        }
+        
         return crow::response(200, res);
     });
 
@@ -355,7 +364,11 @@ int main(int argc, char **argv){
         IDEX.resetData();
         EXMEM.resetData();
         MEMWB.resetData();
-        assemble();
+        try{
+            assemble();
+        } catch (const std::exception& e) {
+            return crow::response(500, e.what());
+        }
         if (globl.name.empty())
             return crow::response(400,"Globl Not Found");
         pc = *globl.addr;
@@ -378,7 +391,7 @@ int main(int argc, char **argv){
         if (content_type == "text/plain") {
             // 텍스트 파일 처리
             std::string file_content = req.body;
-            std::ofstream t("../../test/test.s");  // ASM 파일 저장
+            std::ofstream t("test/test.s");  // ASM 파일 저장
 
             if (!t) {
                 return crow::response(500, "Internal Server Error: Cannot open test/test.s");
@@ -427,7 +440,7 @@ int main(int argc, char **argv){
                     std::string file_content = body.substr(file_start, file_end - file_start);
 
                     // 파일 저장
-                    std::ofstream out("../../test/test.s", std::ios::binary);
+                    std::ofstream out("test/test.s", std::ios::binary);
                     if (!out) {
                         return crow::response(500, "Failed to open file for writing");
                     }

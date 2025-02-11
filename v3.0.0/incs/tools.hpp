@@ -20,6 +20,9 @@ uint32_t subBit(const bitset<32>& bs, int high, int low);
 
 void joinThread(thread& t);
 
+
+bool isNumber(const string& str);
+
 // bitset을 16진수로 변환하는 함수 선언
 std::string printHex(std::bitset<32> value);
 std::string printBin(std::bitset<1> value);

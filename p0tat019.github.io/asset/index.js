@@ -10,73 +10,86 @@ document.addEventListener("DOMContentLoaded", () => {
     let pc = 0; // 초기 Program Counter 값
     nextButton.disabled = true;
 
-        // Function to display the fetched data
+    // 로딩 창 보이기
+    function showLoading() {
+        document.getElementById("loadingPopup").style.display = "flex";
+    }
+
+    // 로딩 창 숨기기
+    function hideLoading() {
+        document.getElementById("loadingPopup").style.display = "none";
+    }
+
+    // Function to display the fetched data
     function displayData(data) {
 
-        // Display MEMWB data
+        // Display MEMWB data (reverse order)
         const memwb = data.MEMWB;
         document.getElementById('MEMWB').innerHTML = `
-            <strong>rd:</strong> ${memwb.rd} <br>
-            <strong>wb_data:</strong> ${memwb.wb_data} <br>
-            <strong>next_pc:</strong> ${memwb.next_pc} <br>
-            <strong>RegWrite:</strong> ${memwb.signal_wb.RegWrite} <br>
-            <strong>MemtoReg:</strong> ${memwb.signal_wb.MemtoReg} <br>
+            <span><strong>MemtoReg:</strong> ${memwb.signal_wb.MemtoReg}</span> 
+            <span><strong>RegWrite:</strong> ${memwb.signal_wb.RegWrite}</span> 
+            <span><strong>next_pc:</strong> ${memwb.next_pc}</span> 
+            <span><strong>wb_data:</strong> ${memwb.wb_data}</span> 
+            <span><strong>rd:</strong> ${memwb.rd}</span> 
         `;
 
-        // Display EXMEM data
+        // Display EXMEM data (reverse order)
         const exmem = data.EXMEM;
         document.getElementById('EXMEM').innerHTML = `
-            <strong>rd:</strong> ${exmem.rd} <br>
-            <strong>b:</strong> ${exmem.b} <br>
-            <strong>ALUOut:</strong> ${exmem.ALUOut} <br>
-            <strong>zero:</strong> ${exmem.zero} <br>
-            <strong>next_pc:</strong> ${exmem.next_pc} <br>
-            <strong>Jump:</strong> ${exmem.signal_mem.Jump} <br>
-            <strong>Branch:</strong> ${exmem.signal_mem.Branch} <br>
-            <strong>MemWrite:</strong> ${exmem.signal_mem.MemWrite} <br>
-            <strong>JumpReg:</strong> ${exmem.signal_mem.JumpReg} <br>
-            <strong>MemRead:</strong> ${exmem.signal_mem.MemRead} <br>
-            <strong>RegWrite:</strong> ${exmem.signal_wb.RegWrite} <br>
-            <strong>MemtoReg:</strong> ${exmem.signal_wb.MemtoReg} <br>
+            <span><strong>MemtoReg:</strong> ${exmem.signal_wb.MemtoReg}</span> 
+            <span><strong>RegWrite:</strong> ${exmem.signal_wb.RegWrite}</span> 
+            <span><strong>MemRead:</strong> ${exmem.signal_mem.MemRead}</span> 
+            <span><strong>JumpReg:</strong> ${exmem.signal_mem.JumpReg}</span> 
+            <span><strong>MemWrite:</strong> ${exmem.signal_mem.MemWrite}</span> 
+            <span><strong>Branch:</strong> ${exmem.signal_mem.Branch}</span> 
+            <span><strong>Jump:</strong> ${exmem.signal_mem.Jump}</span> 
+            <span><strong>next_pc:</strong> ${exmem.next_pc}</span> 
+            <span><strong>zero:</strong> ${exmem.zero}</span> 
+            <span><strong>ALUOut:</strong> ${exmem.ALUOut}</span> 
+            <span><strong>b:</strong> ${exmem.b}</span> 
+            <span><strong>rd:</strong> ${exmem.rd}</span> 
         `;
 
-        // Display IDEX data
+        // Display IDEX data (reverse order)
         const idex = data.IDEX;
         document.getElementById('IDEX').innerHTML = `
-            <strong>rd:</strong> ${idex.rd} <br>
-            <strong>rs:</strong> ${idex.rs} <br>
-            <strong>b:</strong> ${idex.b} <br>
-            <strong>a:</strong> ${idex.a} <br>
-            <strong>ALUOp:</strong> ${idex.signal_ex.ALUOp} <br>
-            <strong>ALUSrc:</strong> ${idex.signal_ex.ALUSrc} <br>
-            <strong>RegDst:</strong> ${idex.signal_ex.RegDst} <br>
-            <strong>Jump:</strong> ${idex.signal_mem.Jump} <br>
-            <strong>Branch:</strong> ${idex.signal_mem.Branch} <br>
-            <strong>MemWrite:</strong> ${idex.signal_mem.MemWrite} <br>
-            <strong>JumpReg:</strong> ${idex.signal_mem.JumpReg} <br>
-            <strong>MemRead:</strong> ${idex.signal_mem.MemRead} <br>
-            <strong>rt:</strong> ${idex.rt} <br>
-            <strong>next_pc:</strong> ${idex.next_pc} <br>
-            <strong>flush:</strong> ${idex.flush} <br>
-            <strong>IDEXWrite:</strong> ${idex.IDEXWrite} <br>
-            <strong>constant:</strong> ${idex.constant} <br>
+            <span><strong>IDEXWrite:</strong> ${idex.IDEXWrite}</span> 
+            <span><strong>flush:</strong> ${idex.flush}</span> 
+            <span><strong>MemRead:</strong> ${idex.signal_mem.MemRead}</span> 
+            <span><strong>JumpReg:</strong> ${idex.signal_mem.JumpReg}</span> 
+            <span><strong>MemWrite:</strong> ${idex.signal_mem.MemWrite}</span> 
+            <span><strong>Branch:</strong> ${idex.signal_mem.Branch}</span> 
+            <span><strong>Jump:</strong> ${idex.signal_mem.Jump}</span> 
+            <span><strong>RegDst:</strong> ${idex.signal_ex.RegDst}</span> 
+            <span><strong>ALUSrc:</strong> ${idex.signal_ex.ALUSrc}</span> 
+            <span><strong>ALUOp:</strong> ${idex.signal_ex.ALUOp}</span> 
+            <span><strong>next_pc:</strong> ${idex.next_pc}</span> 
+            <span><strong>a:</strong> ${idex.a}</span> 
+            <span><strong>b:</strong> ${idex.b}</span> 
+            <span><strong>constant:</strong> ${idex.constant}</span> 
+            <span><strong>rs:</strong> ${idex.rs}</span>
+            <span><strong>rt:</strong> ${idex.rt}</span> 
+            <span><strong>rd:</strong> ${idex.rd}</span> 
         `;
 
-        // Display IFID data
+        // Display IFID data (reverse order)
         const ifid = data.IFID;
         document.getElementById('IFID').innerHTML = `
-            <strong>instruction:</strong> ${ifid.instruction} <br>
-            <strong>next_pc:</strong> ${ifid.next_pc} <br>
-            <strong>flush:</strong> ${ifid.flush} <br>
-            <strong>IFIDWrite:</strong> ${ifid.IFIDWrite} <br>
+            <span><strong>IFIDWrite:</strong> ${ifid.IFIDWrite}</span> 
+            <span><strong>flush:</strong> ${ifid.flush}</span> 
+            <span><strong>next_pc:</strong> ${ifid.next_pc}</span> 
+            <span><strong>instruction:</strong> ${ifid.instruction}</span> 
         `;
+
     }
 
 
     async function fetchData() {
         nextButton.disabled = true;
         try{
+            showLoading();
             const response = await fetch('/next');
+            hideLoading();
             if (!response.ok){
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -92,10 +105,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
     async function uploadFormData(formData, type) {
         try {
+            showLoading();
             const response = await fetch('/upload', {
                 method: 'POST',
                 body: formData
             });
+            hideLoading();
             if (!response.ok){
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -108,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     async function uploadData(formData, type) {
         try {
+            showLoading();
             const response = await fetch('/upload', {
                 method: 'POST',
                 headers: {
@@ -115,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 body: formData
             });
+            hideLoading();
             if (!response.ok){
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -131,11 +148,12 @@ document.addEventListener("DOMContentLoaded", () => {
     async function resetData(){
         resetButton.disabled = true;
         try{
+            showLoading();
             const response = await fetch('/reset')
+            hideLoading();
             if(!response.ok){
                 throw new Error(`Reset failed: ${response.status}`);
             }
-            
             const data = await response.json();
             pcView.textContent = "PC : " + data.pc;
             displayData(data);
@@ -206,45 +224,68 @@ document.addEventListener("DOMContentLoaded", () => {
         runButton.setAttribute("data-state", "stop");
     });
 
+    const dataInput =  document.getElementById('dataInput');
+    const modelLabel = document.getElementById('modeLabel');
+    dataInput.addEventListener("input", () => {
+        if (dataInput.value[0] !== '$' && modelLabel.innerText === "REG"){
+            dataInput.value = '$';
+        }
+    });
 
-    document.getElementById('modeLabel').addEventListener('click', () =>{
+    modelLabel.addEventListener('click', () =>{
         if (isRegMode) {
-            document.getElementById('modeLabel').innerText = "MEM";  // Change mode label to MEM
-            document.getElementById('modeLabel').style.backgroundColor = "yellow";
-            document.getElementById('dataInput').placeholder = "Enter Mem Addr";
+            modelLabel.innerText = "MEM";  // Change mode label to MEM
+            modelLabel.style.backgroundColor = "yellow";
+            modelLabel.style.color = "gray";
+            dataInput.value = '';
             
         } else {
-            document.getElementById('modeLabel').innerText = "REG";  // Change mode label to REG
-            document.getElementById('modeLabel').style.backgroundColor = "gray";
-            document.getElementById('dataInput').placeholder = "Enter Reg Num"
-            
+            modelLabel.innerText = "REG";  // Change mode label to REG
+            modelLabel.style.backgroundColor = "gray";
+            modelLabel.style.color = "yellow";
+            dataInput.value = '$';
         }
-        document.getElementById('dataInput').value = '';  // Clear input after submission
+        
         isRegMode = !isRegMode;  // Toggle between REG and MEM mode
     });
 
     document.getElementById('read').addEventListener('click', async () => {
-        var dataInput = document.getElementById('dataInput').value;
-        if (dataInput) {
+        let InputValue = document.getElementById('dataInput').value;
+        if (InputValue) {
             if (isRegMode) {
-                const response = await fetch(`/read_reg?data=${encodeURIComponent(dataInput)}`);
+                InputValue = InputValue.substring(1);
+                showLoading();
+                const response = await fetch(`/read_reg?data=${encodeURIComponent(InputValue)}`);
+                hideLoading();
                 const reg_data = await response.json();
-                document.getElementById('data').innerText = `REG[${dataInput}] : ${reg_data.content}`;
-                
+                document.getElementById('data').innerText = `REG[$${InputValue}] : ${reg_data.content}`;
+                InputValue.value = '$';
             } else {
-                const response = await fetch(`/read_mem?data=${encodeURIComponent(dataInput)}`);
+                showLoading();
+                const response = await fetch(`/read_mem?data=${encodeURIComponent(InputValue)}`);
+                hideLoading();
                 const mem_data = await response.json();
-                document.getElementById('data').innerText = `MEM[${dataInput}] : ${mem_data.content}`;
+                document.getElementById('data').innerText = `MEM[${InputValue}] : ${mem_data.content}`;
+                InputValue.value = '';
 
             }
-            document.getElementById('dataInput').value = '';  // Clear input after submission
+              // Clear input after submission
         } else {
             alert('Please enter data');
         }
     });
 
 
+    
+    // 팝업을 여는 버튼 클릭
+document.getElementById('searchButton').addEventListener('click', function() {
+    document.getElementById('popupForm').style.display = 'block';
+});
 
+// 팝업을 닫는 버튼 클릭
+document.getElementById('closePopup').addEventListener('click', function() {
+    document.getElementById('popupForm').style.display = 'none';
+});
 
 
 

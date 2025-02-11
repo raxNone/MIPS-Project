@@ -8,6 +8,9 @@
 </head>
 
 <body>
+    <div id="loadingPopup" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
     <div class="navbar">
         <div class="title">컴퓨터 구조 시뮬레이터</div>
         <div class="buttons">
@@ -21,6 +24,9 @@
             <button id="resetButton">
                 <img src="https://img.icons8.com/metro/26/restart.png" alt="restart" style="width: 30px; height: 30px; vertical-align: middle;"/>
             </button>
+            <button id="searchButton">
+                <img src="https://img.icons8.com/metro/26/search.png" alt="search" style="width: 30px; height: 30px; vertical-align: middle;" />
+            </button> 
         </div>
     </div>
     <hr>
@@ -31,36 +37,42 @@
         </div>
 
         <div class="circuit-container">
-            <div class="container">
-                <!-- 첫 번째 그룹: IFID, IDEX -->
+                <div class="data-item" id="IFID">
                     <h2>IFID</h2>
-                    <div id="IFID" class="data-section"></div>
+                    <div class="data-section"></div>
+                </div>
+                
+                <div class="data-item" id="IDEX">
                     <h2>IDEX</h2>
-                    <div id="IDEX" class="data-section"></div>
+                    <div class="data-section"></div>
+                </div>
+                
+                <div class="data-item" id="EXMEM">
                     <h2>EXMEM</h2>
-                    <div id="EXMEM" class="data-section"></div>
+                    <div class="data-section"></div>
+                </div>
+                
+                <div class="data-item" id="MEMWB">
                     <h2>MEMWB</h2>
-                    <div id="MEMWB" class="data-section"></div>
+                    <div class="data-section"></div>
                 </div>
-            </div>
+        </div>
+        
 
-            <!-- Form Section -->
-            <div class="form-container">
-                <button id="modeLabel" contenteditable="false">REG</button>
-                <!-- Dynamic Form -->
-                <div>
-                    <input type="text" id="dataInput" placeholder="Enter Reg Data">
-                    <textarea id="data"></textarea>
-                    <button id="read">Submit</button>
+        <!-- Form Section (팝업) -->
+        <div id="popupForm" class="form-container">
+            <div class="popup-content">
+                <button id="closePopup" class="close-btn">X</button>
+                <button id="modeLabel" contenteditable="false" style="color:yellow; background-color: gray;">REG</button>
+                <div id="input-container">
+                    <input type="text" id="dataInput" placeholder="Enter MEM Addr" value="$">
+                    <button id="read">Search</button>
                 </div>
+                <textarea id="data" readonly></textarea>
             </div>
-        
-            
-        
-        
-        
         </div>
     </div>
+
     <footer>
         이 프로젝트는 컴퓨터 구조의 이해를 돕기 위한 시뮬레이터입니다. 다소 맞지 않는 결과가 생길 수 있습니다.
         <div>
