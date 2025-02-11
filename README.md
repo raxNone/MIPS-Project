@@ -1,5 +1,7 @@
 # MIPS Emulator Project
 
+![img](./assets/screenshot.png)
+
 ## Overview
 This project is a MIPS emulator that simulates the hardware behavior of a computer processor based on the MIPS architecture. The software mimics the execution of instructions and provides an interface for interacting with registers, memory, and file uploads.
 
@@ -20,6 +22,7 @@ This project is a MIPS emulator that simulates the hardware behavior of a comput
 
 ## Key Features
 - **File Upload**: Allows users to upload necessary files for processing.
+
 - **Clock Execution**: Emulates the clock cycles of the MIPS processor.
 - **Register & Memory Inspection**: Provides a feature to query the status of registers and memory.
 
