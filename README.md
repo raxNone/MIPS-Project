@@ -19,6 +19,7 @@ This project is a MIPS emulator that simulates the hardware behavior of a comput
 - **IDE**: Visual Studio Code 1.96.4
 - **Framework**: Crow (C++ microframework)
 - **Operating System**: Ubuntu 22.04 LTS
+- **Communication** : [Notion](https://imminent-nail-df5.notion.site/MIPS-17ea63d077498023b4f9e80807bc8dca?pvs=4)
 
 ## Key Features
 - **File Upload**: Allows users to upload necessary files for processing.
