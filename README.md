@@ -48,10 +48,15 @@ This project is a MIPS emulator that simulates the hardware behavior of a comput
     ```bash
     make run
     ```
-5. Clean build file:
+
+5. Visit [localhost:8080](http://localhost:8080)
+
+6. Clean build file:
     ```bash
     make clean
     ```
+
+
 
 ### File Upload
 - Upload your MIPS program files via the web interface.
