@@ -8,7 +8,7 @@ void IFID_reg::setReg(const _IFID &reg){
 }
 // IFID_reg 클래스의 resetData 함수 구현
 void IFID_reg::resetData() {
-    IFIDWrite = 1;
+    IFIDWrite = 0;
     flush = 0;
     reg.next_pc.reset();
     reg.instruction.reset();
@@ -16,7 +16,7 @@ void IFID_reg::resetData() {
 
 // IDEX_reg 클래스의 resetData 함수 구현
 void IDEX_reg::resetData() {
-    IDEXWrite = 1;
+    IDEXWrite = 0;
     flush = 0;
     reg.signal_wb = {};  // Reset WB_SIG
     reg.signal_mem = {}; // Reset MEM_SIG

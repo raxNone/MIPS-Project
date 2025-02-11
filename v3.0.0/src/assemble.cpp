@@ -36,28 +36,27 @@ void assemble()
         cerr << "FILE ERROR" << endl;
         exit(-1);
     }
-
+    istringstream iss;
     while(getline(inFile, line)){
+
+        if (line.empty()) continue;
         if (line.find('#') != string::npos){
             line = line.substr(0,line.find('#'));
         }
-        istringstream iss(line);
-        iss >> token;
-
         if (line.find(':') != string::npos){
             labelPosed = false;
-            if(token.back() == ':'){
-                token.pop_back();
-                labelName = token;
-            }else{
-                labelName = token;
-                iss >> token;
-            }
+            line[line.find(':')] = ' ';
+            iss.clear();
+            iss.str(line);
+            iss >> labelName;
             iss >> token;
-            if (empty(token))   continue;
+            if (token.empty())   continue;
+        }else{
+            iss.clear();
+            iss.str(line);
+            iss >> token;
         }
 
-        if (line.empty()) continue;
 
         if (token == ".globl"){
             iss >> globl.name;
@@ -165,22 +164,29 @@ void assemble()
         
     }
     inFile.close();
-    inFile.open("../../test/test.s");
+    inFile.open("test/test.s");
 
     while(getline(inFile, line)){
+        if (line.empty()) continue;
         if (line.find('#') != string::npos){
             line = line.substr(0,line.find('#'));
         }
-        istringstream iss(line);        
-        iss >> token;
+        
         if (line.find(':') != string::npos){
             labelPosed = false;
-            if(token.back() != ':'){
-                iss >> token;
-            }
-            if (iss.eof())   continue;
+            line[line.find(':')] = ' ';
+            iss.clear();
+            iss.str(line);
+            iss >> token;
+            iss >> token;
+            if (token.empty())   continue;
+        }else{
+            iss.clear();
+            iss.str(line);
+            iss >> token;
         }
-        if (line.empty()) continue;
+
+
         
         if (token == ".globl"){
             continue;

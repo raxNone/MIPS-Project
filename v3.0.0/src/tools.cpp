@@ -10,6 +10,15 @@ void joinThread(thread& t){
         t.join();
 }
 
+
+bool isNumber(const string& str) {
+    for (char ch : str) {
+        if (!isdigit(ch)) return false; // 숫자가 아닌 문자가 있으면 false
+    }
+    return !str.empty(); // 빈 문자열은 숫자가 아님
+}
+
+
 // bitset을 16진수로 변환하는 함수 구현 (자릿수를 8자리로 고정)
 std::string printHex(std::bitset<32> value) {
     std::stringstream ss;

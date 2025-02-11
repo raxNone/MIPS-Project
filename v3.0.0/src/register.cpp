@@ -2,7 +2,7 @@
 #include "memory.h" // for memset function
 
 bitset<32> Register::operator[](REG_NUM num){   return reg[num];    }
-bitset<32> Register::operator[](unsigned int num){   return reg[num];    }
+bitset<32> Register::operator[](uint32_t num){   return reg[num];    }
 REG_OUT Register::read(const bitset<5>& rs, const bitset<5>& rt){
     return {reg[rs.to_ulong()], reg[rt.to_ulong()]};
 }
