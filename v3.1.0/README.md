@@ -33,7 +33,3 @@ The emulator includes two types of forwarding units to optimize pipeline perform
   - Resolves data hazards by forwarding results from later pipeline stages (EX/MEM or MEM/WB) back to the EX stage.  
   - Prevents stalls by ensuring operands are available when needed.  
 
-
-cmake 할때 
-  sudo apt-get install libboost-all-dev
-필요

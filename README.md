@@ -1,5 +1,7 @@
 # MIPS Emulator Project
 
+![img](./assets/screenshot.png)
+
 ## Overview
 This project is a MIPS emulator that simulates the hardware behavior of a computer processor based on the MIPS architecture. The software mimics the execution of instructions and provides an interface for interacting with registers, memory, and file uploads.
 
@@ -17,9 +19,11 @@ This project is a MIPS emulator that simulates the hardware behavior of a comput
 - **IDE**: Visual Studio Code 1.96.4
 - **Framework**: Crow (C++ microframework)
 - **Operating System**: Ubuntu 22.04 LTS
+- **Communication** : [Notion](https://imminent-nail-df5.notion.site/MIPS-17ea63d077498023b4f9e80807bc8dca?pvs=4)
 
 ## Key Features
 - **File Upload**: Allows users to upload necessary files for processing.
+
 - **Clock Execution**: Emulates the clock cycles of the MIPS processor.
 - **Register & Memory Inspection**: Provides a feature to query the status of registers and memory.
 
@@ -51,10 +55,15 @@ This project is a MIPS emulator that simulates the hardware behavior of a comput
     ```bash
     make run
     ```
-5. Clean build file:
+
+5. Visit [localhost:8080](http://localhost:8080)
+
+6. Clean build file:
     ```bash
     make clean
     ```
+
+
 
 ### File Upload
 - Upload your MIPS program files via the web interface.
