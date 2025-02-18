@@ -27,6 +27,9 @@ This project is a MIPS emulator that simulates the hardware behavior of a comput
 - **Clock Execution**: Emulates the clock cycles of the MIPS processor.
 - **Register & Memory Inspection**: Provides a feature to query the status of registers and memory.
 
+## Notice
+- **2025.02.18. commit**: After clicking the button, please wait for 7 seconds before clicking it again. The start button will be disabled, and only the next, replay, and read buttons will remain active.
+
 ## How to Run
 
 ### Prerequisites
@@ -116,6 +119,7 @@ This folder is used to store **memory** and **assembly** code files for testing 
 - Support for **ELF** and **EXE** file formats in addition to **ASM** files.
 - **Circuit optimization** to reduce execution time.
 - Implementation of **Verilog** for hardware descriptions.
+- Cache
 
 ## Acknowledgments
 - Thanks to the Crow framework for providing the necessary tools for web server implementation.

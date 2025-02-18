@@ -6,9 +6,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetButton = document.getElementById("resetButton");
     const pcView = document.querySelector(".PC_view");
     let isRegMode = true;
+    let resetd = false;
 
     let pc = 0; // 초기 Program Counter 값
-    nextButton.disabled = true;
+    // nextButton.disabled = true;
+    nextButton.disabled = false;
+
+inputField.value = `    .data 0x1000
+    .text 0x2000
+    .globl main
+main:
+# write code here
+
+
+# program end
+li $v0, 10
+syscall
+
+`;
+
+    
 
     // 로딩 창 보이기
     function showLoading() {
@@ -25,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Display MEMWB data (reverse order)
         const memwb = data.MEMWB;
-        document.getElementById('MEMWB').innerHTML = `
+        document.querySelector('#MEMWB .data-section').innerHTML = `
             <span><strong>MemtoReg:</strong> ${memwb.signal_wb.MemtoReg}</span> 
             <span><strong>RegWrite:</strong> ${memwb.signal_wb.RegWrite}</span> 
             <span><strong>next_pc:</strong> ${memwb.next_pc}</span> 
@@ -35,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Display EXMEM data (reverse order)
         const exmem = data.EXMEM;
-        document.getElementById('EXMEM').innerHTML = `
+        document.querySelector('#EXMEM .data-section').innerHTML = `
             <span><strong>MemtoReg:</strong> ${exmem.signal_wb.MemtoReg}</span> 
             <span><strong>RegWrite:</strong> ${exmem.signal_wb.RegWrite}</span> 
             <span><strong>MemRead:</strong> ${exmem.signal_mem.MemRead}</span> 
@@ -52,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Display IDEX data (reverse order)
         const idex = data.IDEX;
-        document.getElementById('IDEX').innerHTML = `
+        document.querySelector('#IDEX .data-section').innerHTML = `
             <span><strong>IDEXWrite:</strong> ${idex.IDEXWrite}</span> 
             <span><strong>flush:</strong> ${idex.flush}</span> 
             <span><strong>MemRead:</strong> ${idex.signal_mem.MemRead}</span> 
@@ -74,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Display IFID data (reverse order)
         const ifid = data.IFID;
-        document.getElementById('IFID').innerHTML = `
+        document.querySelector('#IFID .data-section').innerHTML = `
             <span><strong>IFIDWrite:</strong> ${ifid.IFIDWrite}</span> 
             <span><strong>flush:</strong> ${ifid.flush}</span> 
             <span><strong>next_pc:</strong> ${ifid.next_pc}</span> 
@@ -104,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     async function uploadFormData(formData, type) {
+        resetd = false;
         try {
             showLoading();
             const response = await fetch('/upload', {
@@ -121,7 +139,9 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error: ", error);
         }
     }
+
     async function uploadData(formData, type) {
+        resetd = false;
         try {
             showLoading();
             const response = await fetch('/upload', {
@@ -143,10 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
-
     async function resetData(){
         resetButton.disabled = true;
+        resetd = true;
         try{
             showLoading();
             const response = await fetch('/reset')
@@ -167,6 +186,9 @@ document.addEventListener("DOMContentLoaded", () => {
             
     }
 
+    function run(){
+        
+    }
 
 
     // 드래그한 파일이 텍스트 영역에 놓일 때 실행되는 함수
@@ -200,21 +222,32 @@ document.addEventListener("DOMContentLoaded", () => {
     inputField.addEventListener("input", () => {
         nextButton.disabled = true;
         runButton.setAttribute("data-state", "play");
+        resetd = false;
     });
 
-    runButton.addEventListener("click", async ()=>{
-        if(runButton.getAttribute("data-state") === "play"){
-            await uploadData(inputField.value, "text/plain");
-            await resetData();
-            runButton.setAttribute("data-state", "stop");
-            nextButton.disabled = false;
-        } else{
-            runButton.setAttribute("data-state", "play");
-            nextButton.disabled = true;
-        }
+    // runButton.addEventListener("click", async ()=>{
+    //     if(runButton.getAttribute("data-state") === "play"){
+    //         await uploadData(inputField.value, "text/plain");
+    //         if(!resetd) await resetData();
+    //         fetch('/run')
+    //         .then(data => data.json())
+    //         .then(data =>{
+    //             pcView.textContent = "PC : " + data.pc;
+    //             displayData(data);
+    //         });
+    //         runButton.setAttribute("data-state", "stop");
+    //         nextButton.disabled = true;
+    //     } else{
+    //         await fetch('/stop');
+    //         runButton.setAttribute("data-state", "play");
+    //         nextButton.disabled = false;
+    //     }
         
-    });
+    // });
     nextButton.addEventListener("click", async ()=>{
+        if (!resetd){
+            await resetData();
+        }
         await fetchData();
     });
     resetButton.addEventListener("click", async ()=>{
@@ -277,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     
-    // 팝업을 여는 버튼 클릭
+// 팝업을 여는 버튼 클릭
 document.getElementById('searchButton').addEventListener('click', function() {
     document.getElementById('popupForm').style.display = 'block';
 });
