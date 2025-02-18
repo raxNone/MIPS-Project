@@ -107,6 +107,7 @@ This folder is used to store **memory** and **assembly** code files for testing 
 - Support for **ELF** and **EXE** file formats in addition to **ASM** files.
 - **Circuit optimization** to reduce execution time.
 - Implementation of **Verilog** for hardware descriptions.
+- Cache
 
 ## Acknowledgments
 - Thanks to the Crow framework for providing the necessary tools for web server implementation.
