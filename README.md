@@ -23,6 +23,9 @@ This project is a MIPS emulator that simulates the hardware behavior of a comput
 - **Clock Execution**: Emulates the clock cycles of the MIPS processor.
 - **Register & Memory Inspection**: Provides a feature to query the status of registers and memory.
 
+## Notice
+- **2025.02.18. commit**: After clicking the button, please wait for 7 seconds before clicking it again. The start button will be disabled, and only the next, replay, and read buttons will remain active.
+
 ## How to Run
 
 ### Prerequisites
